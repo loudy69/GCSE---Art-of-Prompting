@@ -72,12 +72,10 @@ html[data-theme="dark"] {
   --ms-wordmark: #737373;
   --tl-red: var(--cp-danger); --tl-amber: var(--cp-warning); --tl-green: var(--cp-success);
   --tl-housing: #2b2b2b; --tl-off: #4a4a4a;
-  --film-bg: #1f1f1f; --film-hole: #f7f4ef;
 }
 html[data-theme="dark"] {
   --ms-brand-blue: #4da6ff; --ms-brand-blue-hover: #6cb6ff; --ms-on-blue: #1a1a1a;
   --ms-wordmark: #dedede; --tl-housing: #1a1a1a; --tl-off: #3a3a3a;
-  --film-bg: #161616; --film-hole: #3d3b3a;
 }
 @property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
 
@@ -260,33 +258,77 @@ textarea:focus { outline: none; border-color: var(--ms-brand-blue); box-shadow: 
 .empty { text-align: center; color: var(--cp-text-muted); padding: 30px 10px; }
 .foot { margin-top: 16px; font-size: 12px; color: var(--cp-text-soft); text-align: center; }
 
-/* Filmstrip */
+/* Storyline */
 .film { position: fixed; left: 0; right: 0; bottom: 0; height: 132px; z-index: 30; display: flex; flex-direction: column; background: var(--cp-panel-strong); border-top: 1px solid var(--cp-border); }
-.prog { height: 4px; background: var(--cp-surface-soft); }
-.prog i { display: block; height: 100%; width: 0; transition: width .5s cubic-bezier(.2,.9,.2,1); background: linear-gradient(90deg, var(--ms-red), var(--ms-green), var(--ms-blue), var(--ms-yellow)); }
+.film::before { content: ""; height: 3px; flex: none; background: linear-gradient(90deg, var(--ms-red), var(--ms-green), var(--ms-blue), var(--ms-yellow)); opacity: .85; }
 .filmrow { flex: 1; display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 0; }
 .navbtn { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--cp-border-strong); background: var(--cp-surface); cursor: pointer; font-size: 22px; line-height: 1; display: grid; place-items: center; transition: transform .15s, background .15s; }
 .navbtn:hover:not(:disabled) { transform: scale(1.08); background: var(--cp-surface-soft); }
 .navbtn:disabled { opacity: .35; cursor: default; }
-.reel {
-  flex: 1; display: flex; gap: 10px; overflow-x: auto; padding: 16px 12px; border-radius: 10px; scroll-behavior: smooth; scrollbar-width: thin;
-  background:
-    repeating-linear-gradient(90deg, var(--film-hole) 0 8px, transparent 8px 18px) top 4px left 0 / 100% 6px no-repeat,
-    repeating-linear-gradient(90deg, var(--film-hole) 0 8px, transparent 8px 18px) bottom 4px left 0 / 100% 6px no-repeat,
-    var(--film-bg);
+.reel { flex: 1; min-width: 0; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; scrollbar-width: none; }
+.reel.scrolls { -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+.reel::-webkit-scrollbar { display: none; }
+.track { --n: 7; position: relative; height: 100%; min-width: calc(var(--n) * 104px); display: grid; grid-template-columns: repeat(var(--n), 1fr); padding-top: 12px; }
+.rail {
+  position: absolute; top: calc(12px + 24px); left: calc(50% / var(--n)); right: calc(50% / var(--n)); height: 4px; margin-top: -2px;
 }
-.frame {
-  flex: none; width: 132px; height: 70px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; text-align: left;
-  background: var(--cp-surface); padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between; opacity: .72;
-  transition: transform .25s cubic-bezier(.2,1.4,.4,1), opacity .25s, border-color .25s;
+.rail::before {
+  content: ""; position: absolute; inset: 0; border-radius: 99px; opacity: .6;
+  background: repeating-linear-gradient(90deg, var(--cp-border-strong) 0 6px, transparent 6px 12px);
+  background-size: 24px 100%; animation: railFlow 1.6s linear infinite;
 }
-.frame:hover { opacity: 1; transform: translateY(-2px); }
-.frame.active { opacity: 1; border-color: var(--ms-brand-blue); transform: translateY(-3px) scale(1.06); box-shadow: 0 0 16px color-mix(in srgb, var(--ms-brand-blue) 55%, transparent); }
-.frame .fn { font-size: 10px; font-weight: 700; color: var(--cp-text-soft); }
-.frame .fl { font-size: 12px; font-weight: 600; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.frame .fv { display: flex; gap: 3px; }
-.frame .fv i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
-.frame .fv i.sq { border-radius: 2px; }
+.rail i {
+  position: absolute; inset: 0; border-radius: 99px;
+  background: linear-gradient(90deg, var(--ms-red), var(--ms-yellow) 33%, var(--ms-green) 66%, var(--ms-blue));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ms-blue) 45%, transparent);
+  clip-path: inset(-8px calc(100% - var(--p, 0%)) -8px 0 round 99px);
+  transition: clip-path .7s cubic-bezier(.2,.9,.2,1);
+}
+.rail b {
+  position: absolute; left: var(--p, 0%); top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+  background: var(--ms-on-blue); box-shadow: 0 0 0 3px var(--ms-blue), 0 0 14px 4px var(--ms-blue);
+  transition: left .7s cubic-bezier(.2,.9,.2,1); animation: comet 1.4s ease-in-out infinite;
+}
+@keyframes railFlow { to { background-position: 24px 0; } }
+@keyframes comet { 50% { box-shadow: 0 0 0 3px var(--ms-blue), 0 0 22px 8px var(--ms-blue); } }
+
+.stop {
+  --c: var(--ms-brand-blue); position: relative; z-index: 1; border: 0; background: none; padding: 0 4px; cursor: pointer; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--cp-text-muted); text-align: center;
+}
+.stop .node {
+  width: 48px; height: 48px; flex: none; display: grid; place-items: center; position: relative;
+}
+.stop .dot {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--cp-surface); border: 2px solid var(--cp-border-strong); color: var(--cp-text-soft);
+  transition: transform .35s cubic-bezier(.2,1.5,.4,1), background .3s, border-color .3s, color .3s, box-shadow .3s;
+}
+.stop .dot svg { width: 17px; height: 17px; display: block; }
+.stop .dot b { font-size: 14px; font-weight: 800; line-height: 1; }
+.stop:hover .dot { transform: translateY(-3px) scale(1.08); border-color: var(--c); color: var(--c); }
+.stop.done .dot { background: var(--c); border-color: var(--c); color: var(--ms-on-blue); }
+.stop.active .dot {
+  transform: scale(1.28); color: var(--ms-on-blue); border-color: transparent;
+  background: conic-gradient(from var(--ang), var(--ms-red), var(--ms-yellow), var(--ms-green), var(--ms-blue), var(--ms-red)) border-box;
+  animation: spinBorder 4s linear infinite; box-shadow: 0 6px 18px color-mix(in srgb, var(--ms-blue) 45%, transparent);
+}
+.stop.active .dot > * { filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.stop.active .node::before, .stop.active .node::after {
+  content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid var(--ms-blue); opacity: 0; animation: ripple 2.2s ease-out infinite;
+}
+.stop.active .node::after { animation-delay: 1.1s; }
+@keyframes ripple { 0% { transform: scale(.9); opacity: .7; } 100% { transform: scale(1.7); opacity: 0; } }
+.stop .kick { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cp-text-soft); line-height: 1; margin-top: 2px; }
+.stop .fl { font-size: 12px; font-weight: 600; line-height: 1.2; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .3s; }
+.stop.active .kick { color: var(--c); }
+.stop.active .fl, .stop:hover .fl { color: var(--cp-text); }
+.stop .fv { display: flex; gap: 3px; height: 6px; }
+.stop .fv i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); opacity: .55; transition: opacity .3s, transform .3s; }
+.stop .fv i.sq { border-radius: 1px; }
+.stop.active .fv i { opacity: 1; transform: scale(1.15); }
+.stop:focus-visible { outline: none; }
+.stop:focus-visible .dot { outline: 2px solid var(--ms-brand-blue); outline-offset: 3px; }
 .counter { flex: none; font-weight: 700; font-size: 14px; min-width: 54px; text-align: center; color: var(--cp-text-muted); }
 
 @media (max-width: 1050px) {
@@ -347,8 +389,7 @@ textarea:focus { outline: none; border-color: var(--ms-brand-blue); box-shadow: 
   <button class="btn" id="reset" title="Clear all prompts and return to the start">&#8634; Reset</button>
 </header>
 <main id="stage"></main>
-<nav class="film" aria-label="Storyline filmstrip">
-  <div class="prog"><i id="progbar"></i></div>
+<nav class="film" aria-label="Storyline">
   <div class="filmrow">
     <button class="navbtn" id="prev" aria-label="Previous slide">&#8249;</button>
     <div class="reel" id="reel" role="tablist" aria-label="Slides"></div>
@@ -1040,7 +1081,7 @@ if (typeof module !== 'undefined') module.exports = { GCSE, INDUSTRIES, analyseP
       <h2 class="pop" style="--i:1">The Art of the <span class="grad-text">Prompt</span></h2>
       <p class="lede pop" style="--i:2">Great answers start with great prompts. Learn the GCSE method (<b>G</b>oal, <b>C</b>ontext, <b>S</b>ource, <b>E</b>xpectations) through real ${esc(ind.name.toLowerCase())} examples, then grade your own.</p>
       <div class="pop" style="--i:3"><button class="btn primary" data-go="1">Start the story &#8594;</button></div>
-      <p class="hint pop" style="--i:4">Use <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> or the filmstrip below to move along the timeline.</p></div>`;
+      <p class="hint pop" style="--i:4">Use <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> or the storyline below to move along the timeline.</p></div>`;
     if (s.type === 'gcse') return head('The framework', 'GCSE: four ingredients of a great prompt', 'You don’t need all four every time, but the more you include, the less Copilot has to guess.', 'gcse') +
       `<div class="gcse">${GCSE.map((g, j) => `<div class="gcard e-${g.k} pop" style="--i:${j + 1}"><div class="big">${g.k.toUpperCase()}</div><h3>${g.name}</h3><p class="q">${esc(g.q)}</p><p>${esc(g.d)}</p><div class="eg">${esc(g.eg)}</div></div>`).join('')}</div>
       <div class="formula pop" style="--i:5"><span class="t e-g">Goal</span>+<span class="t e-c">Context</span>+<span class="t e-s">Source</span>+<span class="t e-e">Expectations</span><span class="eq">= Great prompt</span></div>`;
@@ -1093,12 +1134,20 @@ if (typeof module !== 'undefined') module.exports = { GCSE, INDUSTRIES, analyseP
   function render() {
     buildSlides();
     stage.innerHTML = slides.map((s, i) => `<section class="slide" data-i="${i}" aria-label="${esc(s.label)}"><div class="wrap${s.type === 'intro' ? ' fill' : ''}">${renderSlide(s, i)}</div></section>`).join('');
-    reel.innerHTML = slides.map((s, i) => {
-      const dots = s.type === 'scenario' ? ['tl-red', 'tl-amber', 'tl-green'].map(c => `<i style="--c:var(--${c})"></i>`).join('')
-        : s.type === 'grader' ? ['tl-red', 'tl-amber', 'tl-green'].map(c => `<i style="--c:var(--${c})"></i>`).join('')
+    const ICO = {
+      intro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>',
+      gcse: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>',
+      rules: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>',
+      grader: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>'
+    };
+    const KICK = { intro: 'Start', gcse: 'Learn', rules: 'Remember', grader: 'Your turn' };
+    reel.innerHTML = `<div class="track" style="--n:${slides.length}"><div class="rail" aria-hidden="true"><i></i><b></b></div>` + slides.map((s, i) => {
+      const dots = (s.type === 'scenario' || s.type === 'grader') ? ['tl-red', 'tl-amber', 'tl-green'].map(c => `<i style="--c:var(--${c})"></i>`).join('')
         : ['ms-red', 'ms-green', 'ms-blue', 'ms-yellow'].map(c => `<i class="sq" style="--c:var(--${c})"></i>`).join('');
-      return `<button class="frame" role="tab" data-go="${i}" aria-label="Slide ${i + 1}: ${esc(s.label)}"><span class="fn">${String(i + 1).padStart(2, '0')}</span><span class="fl">${esc(s.label)}</span><span class="fv">${dots}</span></button>`;
-    }).join('');
+      const icon = s.type === 'scenario' ? `<b>${s.n}</b>` : ICO[s.type];
+      const kick = s.type === 'scenario' ? `Scenario ${s.n}` : KICK[s.type];
+      return `<button class="stop" role="tab" data-go="${i}" title="${esc(s.label)}" aria-label="Step ${i + 1}: ${esc(s.label)}"><span class="node"><span class="dot">${icon}</span></span><span class="kick">${kick}</span><span class="fl">${esc(s.label)}</span><span class="fv">${dots}</span></button>`;
+    }).join('') + '</div>';
     showResult();
     go(Math.min(state.idx, slides.length - 1), true);
   }
@@ -1109,16 +1158,20 @@ if (typeof module !== 'undefined') module.exports = { GCSE, INDUSTRIES, analyseP
     const ta = $('#prompt'); if (ta) state.draft = ta.value;
     state.idx = i;
     stage.querySelectorAll('.slide').forEach((el, j) => { el.classList.toggle('active', j === i); el.classList.toggle('before', j < i); if (j === i) el.scrollTop = 0; });
-    reel.querySelectorAll('.frame').forEach((el, j) => { el.classList.toggle('active', j === i); el.setAttribute('aria-selected', j === i); });
-    const f = reel.children[i];
-    if (f) { const fr = f.getBoundingClientRect(), rr = reel.getBoundingClientRect(); reel.scrollTo({ left: Math.max(0, reel.scrollLeft + fr.left - rr.left - (reel.clientWidth - fr.width) / 2), behavior: 'smooth' }); }
+    const stops = reel.querySelectorAll('.stop');
+    stops.forEach((el, j) => { el.classList.toggle('active', j === i); el.classList.toggle('done', j < i); el.setAttribute('aria-selected', j === i); });
+    const f = stops[i];
+    reel.classList.toggle('scrolls', reel.scrollWidth > reel.clientWidth + 1);
+    if (f && reel.scrollWidth > reel.clientWidth) { const fr = f.getBoundingClientRect(), rr = reel.getBoundingClientRect(); reel.scrollTo({ left: Math.max(0, reel.scrollLeft + fr.left - rr.left - (reel.clientWidth - fr.width) / 2), behavior: 'smooth' }); }
     $('#counter').textContent = `${i + 1} / ${slides.length}`;
-    $('#progbar').style.width = `${(i / (slides.length - 1)) * 100}%`;
+    const rail = reel.querySelector('.rail'); if (rail) rail.style.setProperty('--p', `${(i / (slides.length - 1)) * 100}%`);
     $('#prev').disabled = i === 0; $('#next').disabled = i === slides.length - 1;
     const s = slides[i];
     document.dispatchEvent(new CustomEvent('aop:slide', { detail: { index: i, total: slides.length, type: s.type, actor: s.actor } }));
     if (s.type === 'grader') document.dispatchEvent(new CustomEvent('aop:grade', { detail: { grade: state.result ? state.result.grade : null } }));
   }
+
+  window.addEventListener('resize', () => reel.classList.toggle('scrolls', reel.scrollWidth > reel.clientWidth + 1));
 
   function setIndustry(k) {
     state.ind = k; sel.value = k;
