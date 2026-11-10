@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Art of the Prompt — GCSE prompting</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+/* Microsoft brand palette (requested by user) layered on the Clawpilot theme */
+:root {
+  --ms-red: #F25022; --ms-green: #7FBA00; --ms-blue: #00A4EF; --ms-yellow: #FFB900;
+  --ms-brand-blue: #0078D4; --ms-brand-blue-hover: #106EBE; --ms-on-blue: #ffffff;
+  --ms-wordmark: #737373;
+  --tl-red: var(--cp-danger); --tl-amber: var(--cp-warning); --tl-green: var(--cp-success);
+  --tl-housing: #2b2b2b; --tl-off: #4a4a4a;
+  --film-bg: #1f1f1f; --film-hole: #f7f4ef;
+}
+html[data-theme="dark"] {
+  --ms-brand-blue: #4da6ff; --ms-brand-blue-hover: #6cb6ff; --ms-on-blue: #1a1a1a;
+  --ms-wordmark: #dedede; --tl-housing: #1a1a1a; --tl-off: #3a3a3a;
+  --film-bg: #161616; --film-hole: #3d3b3a;
+}
+@property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body {
+  background: var(--cp-bg); color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px; line-height: 1.5;
+}
+button, select, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--ms-brand-blue); outline-offset: 2px; }
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
+
+/* Top bar */
+.topbar {
+  position: fixed; inset: 0 0 auto 0; height: 60px; z-index: 30;
+  display: flex; align-items: center; gap: 14px; padding: 0 20px;
+  background: var(--cp-panel-strong); border-bottom: 1px solid var(--cp-border);
+}
+.brand { display: flex; align-items: center; gap: 9px; flex: none; }
+.brand svg { width: 22px; height: 22px; display: block; }
+.wordmark { font-weight: 600; font-size: 19px; color: var(--ms-wordmark); letter-spacing: -0.3px; }
+.vdiv { width: 1px; height: 26px; background: var(--cp-border); flex: none; }
+.title h1 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.2; }
+.title p { margin: 0; font-size: 12px; color: var(--cp-text-muted); }
+.spacer { flex: 1; }
+.field { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cp-text-muted); }
+.select {
+  appearance: none; padding: 7px 34px 7px 12px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text); font-weight: 600;
+  background-image: linear-gradient(45deg, transparent 50%, var(--cp-text-muted) 50%), linear-gradient(135deg, var(--cp-text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 52%, calc(100% - 12px) 52%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--cp-text-muted); cursor: pointer; user-select: none; }
+.toggle input { accent-color: var(--ms-brand-blue); width: 16px; height: 16px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text); font-weight: 600; font-size: 14px;
+  transition: transform .15s, background .15s, box-shadow .15s;
+}
+.btn:hover { background: var(--cp-surface-soft); transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn.primary { background: var(--ms-brand-blue); color: var(--ms-on-blue); border-color: transparent; }
+.btn.primary:hover { background: var(--ms-brand-blue-hover); box-shadow: 0 6px 18px color-mix(in srgb, var(--ms-brand-blue) 40%, transparent); }
+.btn.ghost { background: transparent; }
+.btn.sm { padding: 5px 10px; font-size: 13px; }
+
+/* Stage & slides */
+#stage { position: fixed; top: 60px; bottom: 132px; left: 0; right: 0; z-index: 10; overflow: hidden; }
+.slide {
+  position: absolute; inset: 0; overflow-y: auto; padding: 22px 32px 36px;
+  opacity: 0; visibility: hidden; transform: translateX(60px) scale(.98);
+  transition: opacity .5s, transform .6s cubic-bezier(.2,.9,.2,1), visibility 0s .6s;
+}
+.slide.before { transform: translateX(-60px) scale(.98); }
+.slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .5s, transform .6s cubic-bezier(.2,.9,.2,1); }
+.wrap { max-width: 1240px; margin: 0 auto; }
+.wrap.fill { height: 100%; }
+.shead { display: flex; gap: 20px; align-items: stretch; margin-bottom: 18px; }
+.shead .txt {
+  flex: 1; padding: 18px 22px; border-radius: 16px; background: var(--cp-panel);
+  border: 1px solid var(--cp-border); box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.anchor {
+  width: 250px; min-height: 160px; flex: none; border-radius: 16px; position: relative;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--ms-brand-blue) 14%, transparent), transparent);
+}
+.eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ms-brand-blue); }
+.eyebrow .ind { padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--ms-brand-blue) 12%, transparent); letter-spacing: .04em; }
+h2 { margin: 6px 0 4px; font-size: 28px; line-height: 1.2; font-weight: 700; letter-spacing: -0.4px; }
+.lede { margin: 0; color: var(--cp-text-muted); max-width: 70ch; }
+.slide.active .pop { animation: popIn .7s cubic-bezier(.2,1.5,.4,1) both; animation-delay: calc(var(--i, 0) * 110ms + 120ms); }
+@keyframes popIn { from { opacity: 0; transform: translateY(26px) scale(.92) rotateX(12deg); } to { opacity: 1; transform: none; } }
+
+/* Intro */
+.intro { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; padding-bottom: 4vh; }
+.intro .anchor { width: min(640px, 90vw); height: 36vh; min-height: 200px; background: radial-gradient(closest-side, color-mix(in srgb, var(--ms-blue) 16%, transparent), transparent); }
+.intro h2 { font-size: clamp(40px, 6vw, 72px); letter-spacing: -1.5px; margin: 8px 0; }
+.grad-text { background: linear-gradient(90deg, var(--ms-red), var(--ms-yellow) 30%, var(--ms-green) 60%, var(--ms-blue)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.intro .lede { margin: 0 auto 18px; font-size: 18px; }
+.hint { font-size: 13px; color: var(--cp-text-soft); margin-top: 12px; }
+kbd { font-family: Consolas, "Courier New", Courier, monospace; font-size: 12px; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--cp-border-strong); background: var(--cp-surface); }
+
+/* GCSE framework */
+.gcse { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; perspective: 900px; }
+.gcard {
+  --c: var(--ms-blue); position: relative; overflow: hidden; padding: 20px; border-radius: 16px;
+  background: var(--cp-panel-strong); border: 1px solid var(--cp-border); border-top: 5px solid var(--c);
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14); transition: transform .3s, box-shadow .3s;
+}
+.gcard:hover { transform: translateY(-6px) rotateX(4deg); box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 28%, transparent); }
+.gcard .big { font-size: 64px; font-weight: 800; line-height: 1; color: var(--c); }
+.gcard h3 { margin: 6px 0 2px; font-size: 20px; }
+.gcard .q { font-weight: 600; color: var(--cp-text-muted); margin: 0 0 8px; }
+.gcard p { margin: 0; font-size: 14px; }
+.gcard .eg { margin-top: 10px; font-size: 13px; color: var(--cp-text-muted); border-left: 3px solid var(--c); padding-left: 8px; }
+.formula { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+.formula .t { padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--c) 18%, transparent); border: 2px solid var(--c); }
+.formula .eq { padding: 6px 16px; border-radius: 999px; background: var(--ms-brand-blue); color: var(--ms-on-blue); }
+
+/* Scenario cards */
+.task { margin-top: 8px; font-size: 14px; color: var(--cp-text); padding: 8px 12px; border-radius: 10px; background: var(--cp-surface-soft); display: inline-block; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; perspective: 1000px; }
+.pcard {
+  --c: var(--tl-red); display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 16px;
+  background: var(--cp-panel-strong); border: 1px solid var(--cp-border); box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+  transition: transform .3s, box-shadow .3s;
+}
+.pcard:hover { transform: translateY(-4px); box-shadow: 0 16px 34px color-mix(in srgb, var(--c) 25%, transparent); }
+.pcard.average { --c: var(--tl-amber); }
+.pcard.great {
+  --c: var(--tl-green); border: 2px solid transparent;
+  background: linear-gradient(var(--cp-surface), var(--cp-surface)) padding-box,
+    conic-gradient(from var(--ang), var(--ms-red), var(--ms-green), var(--ms-blue), var(--ms-yellow), var(--ms-red)) border-box;
+  animation: spinBorder 6s linear infinite;
+}
+.slide.active .pcard.great.pop { animation: popIn .7s cubic-bezier(.2,1.5,.4,1) both, spinBorder 6s linear infinite; animation-delay: calc(var(--i, 0) * 110ms + 120ms), 0s; }
+@keyframes spinBorder { to { --ang: 360deg; } }
+.phead { display: flex; align-items: center; gap: 10px; }
+.lamp { width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 25%, transparent), 0 0 16px var(--c); animation: glow 2.4s ease-in-out infinite; flex: none; }
+@keyframes glow { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 18%, transparent), 0 0 26px var(--c); } }
+.plabel { font-weight: 700; font-size: 17px; }
+.score { margin-left: auto; font-weight: 700; font-size: 13px; padding: 2px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 18%, transparent); }
+.meter { height: 6px; border-radius: 99px; background: var(--cp-surface-soft); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--c); border-radius: 99px; transition: width 1s cubic-bezier(.2,.9,.2,1) .4s; }
+.slide.active .meter i { width: var(--w); }
+blockquote { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--cp-surface-soft); border-left: 4px solid var(--c); font-size: 14px; line-height: 1.6; }
+.chips { display: flex; gap: 6px; }
+.chip { --e: var(--ms-blue); width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 13px; border: 2px solid var(--cp-border); color: var(--cp-text-soft); }
+.chip.on { background: var(--e); border-color: var(--e); color: var(--ms-on-blue); }
+html[data-theme="dark"] .chip.on { color: var(--cp-accent-fg); }
+.chip.half { border-color: var(--e); color: var(--cp-text); border-style: dashed; }
+.why { margin: 0; font-size: 13px; color: var(--cp-text-muted); }
+.seg { --e: var(--ms-blue); background: color-mix(in srgb, var(--e) 16%, transparent); border-bottom: 2px solid var(--e); border-radius: 3px; padding: 0 2px; transition: background .3s, border-color .3s; }
+.seg sup { font-size: 10px; font-weight: 800; color: var(--e); margin-right: 2px; }
+body.no-hl .seg { background: none; border-bottom-color: transparent; }
+body.no-hl .seg sup { display: none; }
+.e-g { --e: var(--ms-red); --c: var(--ms-red); } .e-c { --e: var(--ms-green); --c: var(--ms-green); }
+.e-s { --e: var(--ms-blue); --c: var(--ms-blue); } .e-e { --e: var(--ms-yellow); --c: var(--ms-yellow); }
+
+/* Golden rules */
+.rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.rule { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: var(--cp-panel-strong); border: 1px solid var(--cp-border); transition: transform .25s; }
+.rule:hover { transform: translateX(6px); }
+.rule .n { --c: var(--ms-red); flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; color: var(--ms-on-blue); background: var(--c); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 40%, transparent); }
+html[data-theme="dark"] .rule .n { color: var(--cp-accent-fg); }
+.rule h4 { margin: 0 0 2px; font-size: 15px; }
+.rule p { margin: 0; font-size: 13px; color: var(--cp-text-muted); }
+
+/* Grader */
+.grader { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+.panel { padding: 18px; border-radius: 16px; background: var(--cp-panel-strong); border: 1px solid var(--cp-border); box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14); }
+.panel h3 { margin: 0 0 8px; font-size: 17px; }
+textarea {
+  width: 100%; min-height: 220px; resize: vertical; padding: 12px 14px; border-radius: 10px; line-height: 1.55;
+  border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text);
+}
+textarea:focus { outline: none; border-color: var(--ms-brand-blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ms-brand-blue) 25%, transparent); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.muted { color: var(--cp-text-muted); font-size: 13px; }
+.result { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; }
+.tlight { width: 74px; padding: 10px; border-radius: 18px; background: var(--tl-housing); display: flex; flex-direction: column; gap: 10px; align-items: center; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); }
+.bulb { width: 46px; height: 46px; border-radius: 50%; background: var(--tl-off); transition: background .35s, box-shadow .35s, transform .35s; }
+.bulb.lit { transform: scale(1.06); }
+.bulb.lit.r { background: var(--tl-red); box-shadow: 0 0 26px var(--tl-red); }
+.bulb.lit.a { background: var(--tl-amber); box-shadow: 0 0 26px var(--tl-amber); }
+.bulb.lit.g { background: var(--tl-green); box-shadow: 0 0 26px var(--tl-green); }
+.verdict { font-size: 28px; font-weight: 800; line-height: 1.1; }
+.verdict.r { color: var(--tl-red); } .verdict.a { color: var(--tl-amber); } .verdict.g { color: var(--tl-green); }
+.bars { display: grid; gap: 8px; margin-top: 12px; }
+.bar { display: grid; grid-template-columns: 110px 1fr 70px; gap: 8px; align-items: center; font-size: 13px; }
+.bar .track { height: 8px; border-radius: 99px; background: var(--cp-surface-soft); overflow: hidden; }
+.bar .track i { display: block; height: 100%; background: var(--e); border-radius: 99px; transition: width .7s cubic-bezier(.2,.9,.2,1); }
+.kw { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.kw span { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--e) 16%, transparent); border: 1px solid var(--e); }
+.tips { margin: 10px 0 0; padding-left: 18px; font-size: 13px; }
+.tips li { margin: 4px 0; }
+.empty { text-align: center; color: var(--cp-text-muted); padding: 30px 10px; }
+.foot { margin-top: 16px; font-size: 12px; color: var(--cp-text-soft); text-align: center; }
+
+/* Filmstrip */
+.film { position: fixed; left: 0; right: 0; bottom: 0; height: 132px; z-index: 30; display: flex; flex-direction: column; background: var(--cp-panel-strong); border-top: 1px solid var(--cp-border); }
+.prog { height: 4px; background: var(--cp-surface-soft); }
+.prog i { display: block; height: 100%; width: 0; transition: width .5s cubic-bezier(.2,.9,.2,1); background: linear-gradient(90deg, var(--ms-red), var(--ms-green), var(--ms-blue), var(--ms-yellow)); }
+.filmrow { flex: 1; display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 0; }
+.navbtn { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--cp-border-strong); background: var(--cp-surface); cursor: pointer; font-size: 22px; line-height: 1; display: grid; place-items: center; transition: transform .15s, background .15s; }
+.navbtn:hover:not(:disabled) { transform: scale(1.08); background: var(--cp-surface-soft); }
+.navbtn:disabled { opacity: .35; cursor: default; }
+.reel {
+  flex: 1; display: flex; gap: 10px; overflow-x: auto; padding: 16px 12px; border-radius: 10px; scroll-behavior: smooth; scrollbar-width: thin;
+  background:
+    repeating-linear-gradient(90deg, var(--film-hole) 0 8px, transparent 8px 18px) top 4px left 0 / 100% 6px no-repeat,
+    repeating-linear-gradient(90deg, var(--film-hole) 0 8px, transparent 8px 18px) bottom 4px left 0 / 100% 6px no-repeat,
+    var(--film-bg);
+}
+.frame {
+  flex: none; width: 132px; height: 70px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; text-align: left;
+  background: var(--cp-surface); padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between; opacity: .72;
+  transition: transform .25s cubic-bezier(.2,1.4,.4,1), opacity .25s, border-color .25s;
+}
+.frame:hover { opacity: 1; transform: translateY(-2px); }
+.frame.active { opacity: 1; border-color: var(--ms-brand-blue); transform: translateY(-3px) scale(1.06); box-shadow: 0 0 16px color-mix(in srgb, var(--ms-brand-blue) 55%, transparent); }
+.frame .fn { font-size: 10px; font-weight: 700; color: var(--cp-text-soft); }
+.frame .fl { font-size: 12px; font-weight: 600; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.frame .fv { display: flex; gap: 3px; }
+.frame .fv i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.frame .fv i.sq { border-radius: 2px; }
+.counter { flex: none; font-weight: 700; font-size: 14px; min-width: 54px; text-align: center; color: var(--cp-text-muted); }
+
+@media (max-width: 1050px) {
+  .cards, .gcse { grid-template-columns: 1fr 1fr; }
+  .grader { grid-template-columns: 1fr; }
+  .title p, .toggle .long { display: none; }
+}
+@media (max-width: 720px) {
+  .cards, .gcse, .rules { grid-template-columns: 1fr; }
+  .shead .anchor { display: none; }
+  .wordmark, .vdiv { display: none; }
+  .slide { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<header class="topbar">
+  <div class="brand" aria-label="Microsoft">
+    <svg viewBox="0 0 23 23" aria-hidden="true">
+      <rect x="1" y="1" width="10" height="10" style="fill:var(--ms-red)"/>
+      <rect x="12" y="1" width="10" height="10" style="fill:var(--ms-green)"/>
+      <rect x="1" y="12" width="10" height="10" style="fill:var(--ms-blue)"/>
+      <rect x="12" y="12" width="10" height="10" style="fill:var(--ms-yellow)"/>
+    </svg>
+    <span class="wordmark">Microsoft</span>
+  </div>
+  <div class="vdiv"></div>
+  <div class="title"><h1>The Art of the Prompt</h1><p id="subtitle">GCSE prompting for Retail</p></div>
+  <div class="spacer"></div>
+  <label class="field" for="industry"><span>Industry</span>
+    <select id="industry" class="select">
+      <option value="retail">Retail</option>
+      <option value="insurance">Insurance</option>
+      <option value="cpg">Consumer Goods</option>
+      <option value="media">Media</option>
+      <option value="telco">Telecommunications</option>
+    </select>
+  </label>
+  <label class="toggle"><input type="checkbox" id="hl" checked><span><span class="long">Highlight </span>GCSE</span></label>
+  <button class="btn" id="reset" title="Clear all prompts and return to the start">&#8634; Reset</button>
+</header>
+<main id="stage"></main>
+<nav class="film" aria-label="Storyline filmstrip">
+  <div class="prog"><i id="progbar"></i></div>
+  <div class="filmrow">
+    <button class="navbtn" id="prev" aria-label="Previous slide">&#8249;</button>
+    <div class="reel" id="reel" role="tablist" aria-label="Slides"></div>
+    <button class="navbtn" id="next" aria-label="Next slide">&#8250;</button>
+    <div class="counter" id="counter">1 / 7</div>
+  </div>
+</nav>
+
+<script id="engine">
+const GCSE = [
+  { k: 'g', name: 'Goal', q: 'What do you want?', d: 'Start with a clear action verb and the outcome you need, so Copilot knows what “done” looks like.', eg: '“Summarise…”, “Draft…”, “Compare…”, “…so I can decide…”' },
+  { k: 'c', name: 'Context', q: 'Why, and who is it for?', d: 'Say who you are, who the audience is, and the situation, constraints or deadline behind the request.', eg: '“I’m a store manager…”, “for the board…”, “by Friday…”' },
+  { k: 's', name: 'Source', q: 'What information should it use?', d: 'Point to the files, emails, meetings, data or guidance it should rely on. In Microsoft 365 Copilot, type “/” to reference them.', eg: '“Use the Q3 sales spreadsheet and /Trading notes…”' },
+  { k: 'e', name: 'Expectations', q: 'How should it respond?', d: 'Set the format, length, tone and any must-haves, such as tables, bullets, citations or what to avoid.', eg: '“A table plus three bullets, under 200 words, plain English.”' }
+];
+const INDUSTRIES = {};
+INDUSTRIES.retail = {
+  name: 'Retail', icon: 'bag',
+  guard: 'Check pricing, promotions and product claims against consumer protection law (CMA and ASA guidance) before anything goes live.',
+  scenarios: [
+    { tag: 'Store operations', title: 'Monthly trading review', task: 'You need to work out which stores to focus on after a weak month.',
+      poor: { t: 'How are sales doing?', why: 'No scope, period, data or format. Copilot has to guess which stores, which measures and why you are asking.' },
+      average: { t: "Analyse last month's sales for our London stores and tell me which ones are underperforming.", why: 'A clear task and scope, but no definition of “underperforming”, no data source and no shape for the answer.' },
+      great: { g: 'Analyse October trading for our 42 London stores so I can choose five to prioritise in next week’s regional visit plan.',
+        c: 'I’m Head of Retail Operations; footfall is down 6% year on year and the board wants a recovery plan by 14 November.',
+        s: 'Use the October store sales dashboard in Excel, the footfall export in /RetailOps and the store managers’ weekly notes in Teams.',
+        e: 'Return a table ranking stores by like-for-like sales against target, conversion and basket size; flag the bottom five with one-line reasons; finish with three bullet-point actions; under 300 words.',
+        why: 'All four GCSE elements, with real measures, a deadline and named data, so the output is ready to act on.' } },
+    { tag: 'E-commerce', title: 'Product page copy', task: 'A new jacket is launching online and needs copy that converts.',
+      poor: { t: 'Write a product description.', why: 'No product, audience, facts or length. You will get generic filler and maybe invented features.' },
+      average: { t: 'Write a product description for our new waterproof hiking jacket for the website. Make it catchy.', why: 'Better: a product and a channel. But no audience, no source facts and “catchy” is vague, so claims may be made up.' },
+      great: { g: 'Write an e-commerce product description for the TrailPeak 3L waterproof jacket to increase conversion on our product page.',
+        c: 'Our customers are UK hillwalkers aged 30–55 who value durability, and we must avoid unsubstantiated green claims under CMA guidance.',
+        s: 'Base it on the attached product spec sheet, the supplier’s test certificate and the top 20 customer reviews from our site.',
+        e: '120–150 words, a punchy headline and five benefit-led bullet points in a friendly, expert tone and UK English; do not include any claim that is not in the source documents.',
+        why: 'Grounded in real specs and reviews, aimed at a defined shopper and protected against risky claims.' } },
+    { tag: 'Customer service', title: 'Late delivery complaint', task: 'A frustrated customer’s sofa is three weeks late.',
+      poor: { t: 'Reply to this customer.', why: 'Which customer, what happened, what can we offer? No goal, context or tone, so it is a gamble.' },
+      average: { t: 'Write a friendly email to a customer whose sofa delivery is late, apologising and giving a new date.', why: 'Has a goal and tone, but no order details, no remedy and no source, so it will be generic and may promise the wrong date.' },
+      great: { g: 'Draft a reply to customer James Holt resolving his complaint that his sofa order (ORD-88214) is three weeks late.',
+        c: 'He has contacted us four times and needs it for his daughter’s wedding on 30 November; we can guarantee delivery on 22 November plus a £75 voucher.',
+        s: 'Use the order history and chat transcripts in the CRM case and the courier’s delay notice email.',
+        e: 'Empathetic, plain English, under 180 words; acknowledge the repeated contacts, confirm the new date and voucher clearly and end with a named contact; do not blame the courier.',
+        why: 'Personal, accurate and on-brand: Copilot knows the facts, the remedy and the tone.' } }
+  ]
+};
+INDUSTRIES.insurance = {
+  name: 'Insurance', icon: 'shield',
+  guard: 'Keep a human in the loop for customer outcomes. FCA Consumer Duty means decisions must be fair, explainable and evidenced.',
+  scenarios: [
+    { tag: 'Claims', title: 'Motor claim summary', task: 'You must decide on a settlement offer for a disputed motor claim today.',
+      poor: { t: 'Summarise this claim.', why: 'Which claim? For what decision? Copilot has no context, sources or format to work with.' },
+      average: { t: 'Summarise the motor claim for policy MTR-20391 and tell me if we should pay it. Keep it short.', why: 'Has an identifier and a decision, but no role, situation or evidence to rely on, and “short” is vague.' },
+      great: { g: 'Summarise motor claim CLM-48213 so I can decide whether to approve the £8,450 settlement offer today.',
+        c: 'I’m a senior claims handler. The policyholder reports a rear-end collision on 2 October; the third party disputes liability and we’re within the 30-day service standard.',
+        s: 'Use the FNOL form, the independent engineer’s report and the email thread with the third-party insurer in /CLM-48213.',
+        e: 'Give a 150-word summary, then a table of key facts (date, parties, damage estimate, liability position, reserve); list missing documents and fraud indicators as bullets; flag uncertainty; plain UK English.',
+        why: 'A decision-ready brief grounded in the actual claim file, with a structure you can scan in seconds.' } },
+    { tag: 'Underwriting', title: 'Commercial property risk', task: 'A broker needs terms on a large warehouse by Friday.',
+      poor: { t: 'Is this building a good risk?', why: 'A yes/no question with no data, appetite or criteria, so the answer can’t be trusted.' },
+      average: { t: 'Assess the fire risk for the warehouse in the attached survey and give me a risk rating.', why: 'Points at a source and a task, but there is no appetite, no rating scale and no output format.' },
+      great: { g: 'Assess the fire and property risk of Northgate Logistics’ 12,000 m² warehouse to support a quote decision on a £6.2m buildings and stock policy.',
+        c: 'I underwrite mid-market commercial property; our appetite excludes unsprinklered sites storing lithium-ion batteries above 500 kg, and the broker needs terms by Friday.',
+        s: 'Base your assessment on the attached 2026 risk survey, the 5-year claims history spreadsheet and section 4 of our Commercial Property Underwriting Guide.',
+        e: 'Return a table scoring COPE (construction, occupancy, protection, exposure) 1–5 with a one-line rationale, an overall rating, any appetite breaches and three risk-improvement recommendations; cite the page or section for each point.',
+        why: 'Applies your own appetite and guide, with traceable reasoning an underwriter can defend.' } },
+    { tag: 'Complaints', title: 'Final response letter', task: 'A home insurance complaint about a slow claim has been upheld.',
+      poor: { t: 'Write a reply to this angry customer.', why: 'No facts, outcome or regulatory requirements. Risky in a regulated complaint process.' },
+      average: { t: 'Write a polite email to Mrs Patel apologising for the delay on her home insurance claim and explaining the next steps.', why: 'Has a customer, tone and purpose, but misses the outcome, redress and mandatory FOS wording.' },
+      great: { g: 'Draft a final response letter to Mrs Anita Patel resolving her complaint about a 6-week delay settling her escape-of-water claim (HOM-77120).',
+        c: 'The complaint is upheld and we’re offering £150 compensation for distress and inconvenience; the letter must meet FCA Consumer Duty and DISP rules, including her right to refer to the Financial Ombudsman Service within six months.',
+        s: 'Use the complaint notes and call transcript in the CRM case file and our approved Final Response template.',
+        e: 'Warm, plain-English tone at a reading age of 9–11, under 350 words in short paragraphs; acknowledge the impact, explain what went wrong and what’s changing; do not admit legal liability.',
+        why: 'Compliant, empathetic and specific, so it is ready for a quick human check rather than a rewrite.' } }
+  ]
+};
+INDUSTRIES.cpg = {
+  name: 'Consumer Goods', icon: 'bottle',
+  guard: 'Only use approved product claims. ASA/CAP rules and retailer agreements apply to anything customer-facing.',
+  scenarios: [
+    { tag: 'Revenue growth', title: 'Promotion post-evaluation', task: 'Decide whether a summer promotion earns a place in next year’s trade plan.',
+      poor: { t: 'Did the promotion work?', why: 'Which promotion, measured how, compared with what? No basis for a real answer.' },
+      average: { t: 'Analyse the results of our summer promotion on Zest Fizzy Lime and tell me if it was worth it.', why: 'Names the product and the question, but “worth it” is undefined and there is no data or format.' },
+      great: { g: 'Evaluate the July “buy one, get one half price” promotion on Zest Fizzy Lime 330ml so I can decide whether to repeat it in the Q2 trade plan.',
+        c: 'I’m a revenue growth manager; the promotion ran in two major grocers with £410k of trade spend, and the category team suspects it cannibalised Zest Original.',
+        s: 'Use the EPOS sell-out data in /Trade/July-Promo, the trade spend tracker spreadsheet and the retailer’s post-event report.',
+        e: 'Show a table of incremental volume, ROI, cannibalisation and baseline uplift; give a clear repeat or don’t-repeat recommendation; list data gaps as bullets; under 250 words.',
+        why: 'Defines success (ROI, cannibalisation), uses real sell-out data and ends in a decision.' } },
+    { tag: 'Brand marketing', title: 'Launch social posts', task: 'A new shampoo launches and needs social copy that stays within approved claims.',
+      poor: { t: 'Write some posts about our new shampoo.', why: 'No channel, audience, claims or length. High risk of off-brand or non-compliant copy.' },
+      average: { t: 'Write three Instagram posts launching our new sulphate-free shampoo for young adults. Make them fun.', why: 'Channel, count and audience are there, but there are no approved claims, brand guide or limits.' },
+      great: { g: 'Create three Instagram captions to launch PureRoots sulphate-free shampoo and drive pre-orders in the first two weeks.',
+        c: 'Our audience is 18–30 year olds with curly hair; legal has approved only the claims “sulphate-free” and “48-hour moisture”, and ASA rules mean we can’t say “chemical-free”.',
+        s: 'Use the approved claims sheet and brand voice guide in /Brand/PureRoots and last campaign’s top-performing posts.',
+        e: 'Each caption under 40 words with a playful tone, two emojis max, one call to action and three hashtags; only use approved claims and flag anything that may need legal review.',
+        why: 'Creative within guardrails: audience, approved claims and brand voice are all explicit.' } },
+    { tag: 'Supply chain', title: 'Supplier disruption', task: 'A packaging supplier delay threatens Christmas production.',
+      poor: { t: "What's happening with our suppliers?", why: 'Far too broad. There is no supplier, issue, data or decision to support.' },
+      average: { t: 'Summarise the risks with our packaging supplier and suggest what we should do.', why: 'A task and a request for options, but no facts about the delay, stock cover or format.' },
+      great: { g: 'Assess the impact of the delayed cardboard delivery from supplier Nordpak on our December production plan and recommend mitigation options.',
+        c: 'I’m a supply planner; Nordpak has warned of a 10-day delay, we have 12 days of cover and Christmas gift packs are our highest-margin line.',
+        s: 'Use the supplier’s email from this morning, the production schedule spreadsheet and the SAP stock report in /SupplyChain.',
+        e: 'Give a one-paragraph summary, a table of affected SKUs with days of cover and a red/amber/green risk, then three ranked options with cost and lead time; state your assumptions.',
+        why: 'Quantified, prioritised and grounded in live data, ready for the S&OP call.' } }
+  ]
+};
+INDUSTRIES.media = {
+  name: 'Media', icon: 'play',
+  guard: 'Fact-check every statistic and quote, respect copyright and editorial standards (Ofcom, IPSO) and label AI-assisted content where policy requires.',
+  scenarios: [
+    { tag: 'Editorial', title: 'Explainer article', task: 'Commission a balanced explainer for the Money section.',
+      poor: { t: 'Write an article about streaming.', why: 'No angle, audience, sources or length, which invites generic copy and invented statistics.' },
+      average: { t: 'Write an article about why young people are cancelling streaming subscriptions. About 800 words.', why: 'Has an angle and a length, but no audience, sources, structure or standards, so facts may be fabricated.' },
+      great: { g: 'Draft an 800-word explainer for our Money section on why 18–24 year olds are cancelling streaming subscriptions, to help readers decide which services to keep.',
+        c: 'Our readers are budget-conscious young professionals, and editorial standards require balance, so include both industry and consumer views.',
+        s: 'Base it on the attached Ofcom Media Nations summary, our reader survey results and the interview notes from Tuesday’s call with analyst Priya Shah.',
+        e: 'Use a strong headline, a standfirst and three subheadings, plus a “what you can do” box; keep the tone neutral and accessible; cite every statistic and flag any claim that needs fact-checking.',
+        why: 'Sourced, balanced and structured to the desk’s format, with fact-check flags built in.' } },
+    { tag: 'Audience insight', title: 'Recommission decision', task: 'Commissioners need to decide whether a new drama gets a second series.',
+      poor: { t: 'How did the show do?', why: 'Which show, which metrics, and against what benchmark? There is nothing to analyse.' },
+      average: { t: 'Analyse the viewing figures for the first series of our new drama and tell me if we should recommission it.', why: 'Has a clear decision, but no data sources, benchmark, cost context or format.' },
+      great: { g: 'Analyse audience performance of series one of “The Harbour” so the commissioning team can decide whether to recommission it this quarter.',
+        c: 'I’m an audience insight manager; the drama cost £9m, aired on Sunday nights against strong competition and performed better on streaming than on linear TV.',
+        s: 'Use the BARB consolidated ratings, our streaming platform’s completion data and the social sentiment report in /Insight/Harbour.',
+        e: 'Write a one-page brief with a headline verdict, a table comparing reach, completion rate and audience profile against our drama benchmark, and three bullet-point risks; concise, no jargon.',
+        why: 'Combines linear, streaming and social evidence into a decision-ready brief.' } },
+    { tag: 'Ad sales', title: 'Sponsorship pitch', task: 'Pitch a podcast sponsorship package to a car brand launching an EV.',
+      poor: { t: 'Write a pitch for an advertiser.', why: 'No advertiser, product, audience proof or ask. It can’t be persuasive.' },
+      average: { t: 'Write a pitch email to a car brand explaining why they should advertise on our podcast network.', why: 'Has a channel and an ask, but no named contact, audience data, package or call to action.' },
+      great: { g: 'Draft a pitch email to Lena Brooks, media director at Voltara Motors, proposing a £120k sponsorship of our “Drive Time” podcast network for their new EV launch.',
+        c: 'Voltara wants to reach urban 25–44 year olds considering an electric car; we met them at Advertising Week and they asked for proof of audience fit.',
+        s: 'Use our podcast audience demographics deck, the case study from last year’s EV campaign and my notes from that meeting.',
+        e: 'Under 200 words in a confident but friendly tone, with three bullet points of audience stats, one clear package price and a proposed 20-minute call next week.',
+        why: 'Tailored to the buyer’s stated need, backed by proof and ending with a clear next step.' } }
+  ]
+};
+INDUSTRIES.telco = {
+  name: 'Telecommunications', icon: 'tower',
+  guard: 'Treat vulnerable customers with care and follow Ofcom General Conditions on fair treatment, outages and automatic compensation.',
+  scenarios: [
+    { tag: 'Network operations', title: 'Outage communications', task: 'A fibre cut has taken broadband down across a city region.',
+      poor: { t: 'Tell customers about the outage.', why: 'Which outage, which customers and which channel? There are no facts, so it risks promising the wrong thing.' },
+      average: { t: 'Write a message to customers explaining the broadband outage in Manchester and apologising.', why: 'Has an audience and a purpose, but no cause, fix time, channel limits or vulnerable-customer handling.' },
+      great: { g: 'Write an SMS and a website status update for customers affected by today’s broadband outage in Greater Manchester so they know what happened and when service will return.',
+        c: 'About 38,000 customers are affected by a fibre cut; engineers expect a fix by 18:00, customers on our priority register need a follow-up call and Ofcom automatic compensation applies after two working days.',
+        s: 'Use incident report INC-20931 from the Network Operations Centre and our approved outage messaging template.',
+        e: 'SMS under 160 characters; a status update under 120 words with the headings “What happened”, “What we’re doing” and “What you can do”; calm, plain English with no technical jargon; don’t promise a fix time we can’t guarantee.',
+        why: 'Channel-ready, accurate and compliant, with vulnerable customers considered.' } },
+    { tag: 'Customer value', title: 'Churn diagnosis', task: 'SIM-only churn has jumped since the spring price rise.',
+      poor: { t: 'Why are customers leaving?', why: 'No segment, period, data or desired output. Expect generic theory.' },
+      average: { t: 'Analyse why mobile customers are leaving us and give me some ideas to stop it.', why: 'Has a goal and asks for ideas, but there is no segment, data source, target or structure.' },
+      great: { g: 'Identify the top drivers of churn among our SIM-only mobile customers in Q3 and recommend retention offers to reduce monthly churn by 0.5 points.',
+        c: 'I’m in the customer value team; churn rose from 1.4% to 1.9% a month after our April price rise, and competitors launched cheaper 5G plans.',
+        s: 'Use the Q3 churn data extract in /Analytics/Churn, the exit survey verbatims and the competitor price tracker spreadsheet.',
+        e: 'Give a ranked table of churn drivers with the % of leavers and evidence, three offer ideas with an estimated cost per saved customer, and caveats as bullets; under 300 words.',
+        why: 'Measurable target, real evidence and costed actions, so it is ready for the commercial review.' } },
+    { tag: 'Enterprise sales', title: 'Proposal executive summary', task: 'Win a multi-site connectivity deal against two rivals.',
+      poor: { t: 'Write a proposal for a business customer.', why: 'No customer, need, solution or differentiators. It reads like a template.' },
+      average: { t: 'Write a proposal for a pharmacy chain that wants to upgrade its store connectivity to 5G.', why: 'Has a customer type and a need, but no decision-maker priorities, sources or structure.' },
+      great: { g: 'Draft an executive summary for our proposal to upgrade connectivity across Brightwell Pharmacies’ 260 stores to a managed SD-WAN with 5G backup.',
+        c: 'Their CIO, Tom Reeves, cares most about uptime for prescriptions and card payments; their current contract ends in March and we’re competing against two rivals.',
+        s: 'Use the discovery workshop notes, the network design document and pricing from the attached deal sheet in /Sales/Brightwell.',
+        e: 'One page with three headings (Your challenge, Our solution, Why us), quantified benefits and a short pricing table; persuasive but factual tone; avoid unexplained technical acronyms.',
+        why: 'Speaks to the buyer’s priorities with evidence, which is what wins competitive bids.' } }
+  ]
+};
+
+const TIPS = {
+  g: 'Lead with an action verb and say what the output is for, for example “Draft… so I can decide…”.',
+  c: 'Add who you are, who it is for and the situation, such as your role, the audience, a deadline or constraints.',
+  s: 'Name the files, data, emails or meetings to use. In Microsoft 365 Copilot, type “/” to reference them.',
+  e: 'Specify format, length and tone, for example “a table and three bullets, under 200 words, plain English”.'
+};
+const MESSAGES = {
+  great: 'Great prompt! All four GCSE elements are present and specific. Copilot has what it needs.',
+  average: 'Average. It’s a decent start, but Copilot will still have to guess. Strengthen the weaker elements below.',
+  poor: 'Poor. Copilot would be guessing. Build it up with Goal, Context, Source and Expectations.'
+};
+
+const RULES = {
+  g: [
+    [0.6, /\b(summari[sz]e|draft|write|create|generate|analy[sz]e|compare|review|assess|identify|list|explain|calculate|recommend|produce|prepare|rewrite|evaluate|outline|extract|classify|translate|propose|design|build|prioriti[sz]e|categori[sz]e|rank|plan|check|investigate|tell me|give me|find|forecast|estimate|suggest|reply to|respond to)\b/i],
+    [0.4, /\b(so (that )?(i|we|they|the|our|it|you|customers?)|in order to|to (help|support|decide|inform|increase|reduce|improve|drive|launch|choose|prioriti[sz]e|retain|win|resolve|persuade|explain|stop)|whether|resolv\w*|propos\w*|warrant|referral|decision|recommission)\b/i]
+  ],
+  c: [
+    [0.5, /\b(i am|i['’]m|i work|my role|as an? (?=\w)|we are|we['’]re|we have|we['’]ve|we can|we want|we must|we need|our (appetite|team|customers|audience|readers|viewers|brand|policy|strategy)|legal has)/i],
+    [0.35, /\b(customers?|policyholders?|clients?|brokers?|underwriters?|claims handlers?|investigators?|board|managers?|regulators?|ombudsman|mrs|mr|ms|dr|audience|readers?|viewers?|shoppers?|consumers?|cio|ceo|cfo|director|stakeholders?|young (people|adults)|year olds)\b/i],
+    [0.35, /\b(because|currently|following|due to|driven by|appetite|deadline|by (monday|tuesday|wednesday|thursday|friday|tomorrow|\d)|next week|today|this week|within|fca|consumer duty|disp|ofcom|asa|cma|gdpr|regulat\w*|complian\w*|upheld|disputes?|inception|year on year|rose|fell|competitors?|budget|suspects?|contacted|affected|priority register)\b/i],
+    [0.15, /\d/]
+  ],
+  s: [
+    [0.45, /\b(using|use|based on|base (\S+ ){0,2}on|from the|refer to|according to|attached|drawing on|compare\b[\s\S]{0,80}\bagainst)\b/i],
+    [0.45, /\b(the|this|these|attached|our|my|last|latest|recent|that|from)\s+(\S+\s+){0,3}(files?|documents?|reports?|emails?|thread|spreadsheets?|excel|survey|transcripts?|notes|schedule|guide|checklist|template|crm|sharepoint|onedrive|teams|meeting|data|claims history|fnol|statement|receipts|contract|wording|form|dashboard|export|deck|sheet|tracker|extract|verbatims|ratings|case study|certificate|reviews)\b/i],
+    [0.4, /(^|\s)[\/#@][\w-]/]
+  ],
+  e: [
+    [0.35, /\b(table|bullets?|bullet[\s-]points?|list|headings?|subheadings?|paragraphs?|summary|email|letter|slides?|chart|json|csv|markdown|one[\s-]page|headline|captions?|sms|status update|brief|executive summary|standfirst)\b/i],
+    [0.35, /(\b\d+\s*[–-]?\s*\d*\s*(words?|bullets?|bullet points?|points?|sentences?|lines?|paragraphs?|pages?|characters?)\b|\b(one|two|three|four|five)[\s-]+(sentences?|lines?|paragraphs?|pages?|bullets?|bullet[\s-]points?|points?|words?)\b|\bunder \d+|\bno more than\b|\bmax(imum)?\b|\bshort\b|\bbrief\b|\bconcise\b|\bone[\s-]page\b)/i],
+    [0.3, /\b(tone|plain[\s-](english|language)|professional|friendly|polite|formal|warm|empathetic|reading age|jargon|uk english|style|playful|confident|persuasive|neutral|calm|catchy|fun)\b/i],
+    [0.25, /\b(include|exclude|avoid|do not|don['’]t|must|should|cite|flag|highlight|ranked|prioriti[sz]e|separate|state (your )?(assumptions|uncertainty)|only use)\b/i]
+  ]
+};
+
+function analysePrompt(text) {
+  const t = String(text || '').trim();
+  const words = t ? t.split(/\s+/).length : 0;
+  const scores = {}, hits = {};
+  for (const k of ['g', 'c', 's', 'e']) {
+    let s = 0; const found = [];
+    for (const [w, re] of RULES[k]) {
+      const m = t.match(re);
+      if (m) { s += w; const h = m[0].trim().toLowerCase(); if (k !== 'c' || w !== 0.15) if (h && !found.includes(h) && h.length < 40) found.push(h); }
+    }
+    scores[k] = Math.min(1, s); hits[k] = found;
+  }
+  let spec = words < 8 ? 0 : words < 20 ? 0.3 : words < 40 ? 0.6 : words <= 200 ? 1 : 0.8;
+  if (/[A-Z]{2,}-?\d+|\d/.test(t)) spec = Math.min(1, spec + 0.2);
+  if (!words) spec = 0;
+  const sum = scores.g + scores.c + scores.s + scores.e;
+  const pct = Math.round(sum / 4 * 80 + spec * 20);
+  const present = ['g', 'c', 's', 'e'].filter(k => scores[k] >= 0.5).length;
+  let grade;
+  if (words < 6) grade = 'poor';
+  else if (pct >= 70 && present === 4) grade = 'great';
+  else if ((pct >= 30 && present >= 2) || pct >= 45 || (scores.g >= 0.6 && words >= 10)) grade = 'average';
+  else grade = 'poor';
+  return { grade, pct, scores, hits, present, words };
+}
+function greatText(sc) { return [sc.great.g, sc.great.c, sc.great.s, sc.great.e].join(' '); }
+if (typeof module !== 'undefined') module.exports = { GCSE, INDUSTRIES, analysePrompt, greatText };
+</script>
+
+
+<script>
+(function () {
+  const $ = (s, r) => (r || document).querySelector(s);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const EL = { g: 'Goal', c: 'Context', s: 'Source', e: 'Expectations' };
+  const stage = $('#stage'), reel = $('#reel'), sel = $('#industry'), hl = $('#hl');
+  const state = { ind: 'retail', idx: 0, draft: '', result: null };
+  let slides = [];
+
+  const GOLDEN = [
+    ['g', 'Lead with the goal', 'Start with an action verb and say what the output is for, not just the topic.'],
+    ['c', 'Give it the backstory', 'Your role, the audience, the deadline and what has already happened.'],
+    ['s', 'Point to your sources', 'Use “/” to reference files, emails and meetings so answers are grounded in your data.'],
+    ['e', 'Describe “done”', 'Format, length, tone and must-haves, such as a table, bullets or citations.'],
+    ['g', 'Be specific', 'Names, numbers, dates and IDs beat vague words like “short”, “catchy” or “good”.'],
+    ['c', 'Use plain language', 'Write as you would brief a capable new colleague. No magic words required.'],
+    ['s', 'Iterate in conversation', 'Treat the first answer as a draft: refine with follow-ups like “make it shorter” or “add a table”.'],
+    ['e', 'Keep a human in the loop', 'Copilot is a co-pilot. Check facts, figures and tone before anything leaves your hands.']
+  ];
+
+  function buildSlides() {
+    const ind = INDUSTRIES[state.ind];
+    slides = [{ type: 'intro', actor: 'logo', label: 'Welcome' }, { type: 'gcse', actor: 'gcse', label: 'The GCSE method' }];
+    ind.scenarios.forEach((sc, i) => slides.push({ type: 'scenario', actor: ind.icon, label: sc.title, sc, n: i + 1 }));
+    slides.push({ type: 'rules', actor: 'bulb', label: 'Golden rules' }, { type: 'grader', actor: 'traffic', label: 'Your turn' });
+  }
+
+  function head(eyebrow, title, lede, actor, extra) {
+    return `<div class="shead"><div class="txt pop" style="--i:0"><div class="eyebrow">${eyebrow}<span class="ind">${esc(INDUSTRIES[state.ind].name)}</span></div>
+      <h2>${title}</h2><p class="lede">${lede}</p>${extra || ''}</div><div class="anchor" data-actor="${actor}"></div></div>`;
+  }
+
+  function chips(r) {
+    return '<div class="chips" aria-label="GCSE coverage">' + ['g', 'c', 's', 'e'].map(k => {
+      const v = r.scores[k], cls = v >= 0.5 ? 'on' : v > 0 ? 'half' : '';
+      return `<span class="chip e-${k} ${cls}" title="${EL[k]}: ${v >= 0.5 ? 'present' : v > 0 ? 'partial' : 'missing'}">${k.toUpperCase()}</span>`;
+    }).join('') + '</div>';
+  }
+
+  function pcard(level, text, why, i, quoteHtml) {
+    const r = analysePrompt(text);
+    const label = { poor: 'Poor', average: 'Average', great: 'Great' }[level];
+    return `<article class="pcard ${level} pop" style="--i:${i}">
+      <div class="phead"><span class="lamp"></span><span class="plabel">${label}</span><span class="score">${r.pct}/100</span></div>
+      <div class="meter"><i style="--w:${r.pct}%"></i></div>
+      <blockquote>${quoteHtml || esc(text)}</blockquote>${chips(r)}<p class="why">${esc(why)}</p></article>`;
+  }
+
+  function renderScenario(s) {
+    const sc = s.sc, gr = sc.great;
+    const q = ['g', 'c', 's', 'e'].map(k => `<span class="seg e-${k}"><sup>${k.toUpperCase()}</sup>${esc(gr[k])}</span>`).join(' ');
+    return head(`Scenario ${s.n} of 3 · ${esc(sc.tag)}`, esc(sc.title), 'Same task, three prompts. Watch how each GCSE element lifts the quality of what Copilot can give back.', s.actor,
+      `<div class="task"><b>The task:</b> ${esc(sc.task)}</div>`) +
+      `<div class="cards">${pcard('poor', sc.poor.t, sc.poor.why, 1)}${pcard('average', sc.average.t, sc.average.why, 2)}${pcard('great', greatText(sc), gr.why, 3, q)}</div>`;
+  }
+
+  function renderSlide(s, i) {
+    const ind = INDUSTRIES[state.ind];
+    if (s.type === 'intro') return `<div class="intro"><div class="anchor" data-actor="logo"></div>
+      <div class="eyebrow pop" style="--i:0">Microsoft 365 Copilot · <span class="ind">${esc(ind.name)}</span></div>
+      <h2 class="pop" style="--i:1">The Art of the <span class="grad-text">Prompt</span></h2>
+      <p class="lede pop" style="--i:2">Great answers start with great prompts. Learn the GCSE method (<b>G</b>oal, <b>C</b>ontext, <b>S</b>ource, <b>E</b>xpectations) through real ${esc(ind.name.toLowerCase())} examples, then grade your own.</p>
+      <div class="pop" style="--i:3"><button class="btn primary" data-go="1">Start the story &#8594;</button></div>
+      <p class="hint pop" style="--i:4">Use <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> or the filmstrip below to move along the timeline.</p></div>`;
+    if (s.type === 'gcse') return head('The framework', 'GCSE: four ingredients of a great prompt', 'You don’t need all four every time, but the more you include, the less Copilot has to guess.', 'gcse') +
+      `<div class="gcse">${GCSE.map((g, j) => `<div class="gcard e-${g.k} pop" style="--i:${j + 1}"><div class="big">${g.k.toUpperCase()}</div><h3>${g.name}</h3><p class="q">${esc(g.q)}</p><p>${esc(g.d)}</p><div class="eg">${esc(g.eg)}</div></div>`).join('')}</div>
+      <div class="formula pop" style="--i:5"><span class="t e-g">Goal</span>+<span class="t e-c">Context</span>+<span class="t e-s">Source</span>+<span class="t e-e">Expectations</span><span class="eq">= Great prompt</span></div>`;
+    if (s.type === 'scenario') return renderScenario(s);
+    if (s.type === 'rules') return head('Before you hit send', 'Golden rules of prompting', 'Eight habits that turn average prompts into great ones.', 'bulb') +
+      `<div class="rules">${GOLDEN.map((r, j) => `<div class="rule pop" style="--i:${j + 1}"><span class="n e-${r[0]}" style="--c:var(--${['ms-red', 'ms-green', 'ms-blue', 'ms-yellow'][j % 4]})">${j + 1}</span><div><h4>${esc(r[1])}</h4><p>${esc(r[2])}</p></div></div>`).join('')}
+      <div class="rule pop" style="--i:9;grid-column:1/-1"><span class="n" style="--c:var(--ms-brand-blue)">!</span><div><h4>${esc(ind.name)} watch-out</h4><p>${esc(ind.guard)}</p></div></div></div>`;
+    return head('Your turn', 'Write a prompt and get it graded', 'Type or paste a prompt for any task. The grader checks it against GCSE and lights up the traffic light.', 'traffic') +
+      `<div class="grader"><div class="panel pop" style="--i:1"><h3>Your prompt</h3>
+        <textarea id="prompt" placeholder="e.g. Summarise… so I can… I’m a… Use the… Return a table…" aria-label="Your prompt">${esc(state.draft)}</textarea>
+        <div class="row"><button class="btn primary" id="grade">Grade my prompt</button><button class="btn" id="clear">Clear</button><span class="muted"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to grade</span></div>
+        <div class="row"><span class="muted">Try a sample (${esc(ind.name)}):</span><button class="btn sm ghost" data-sample="poor">Poor</button><button class="btn sm ghost" data-sample="average">Average</button><button class="btn sm ghost" data-sample="great">Great</button></div></div>
+        <div class="panel pop" style="--i:2" id="result" aria-live="polite"></div></div>
+        <p class="foot">This grader uses simple pattern checks to illustrate GCSE, not AI. All names, companies and figures are fictional.</p>`;
+  }
+
+  function resultHtml(r) {
+    const lit = r ? { great: 'g', average: 'a', poor: 'r' }[r.grade] : '';
+    const light = `<div class="tlight" role="img" aria-label="Traffic light${r ? ': ' + r.grade : ''}">${['r', 'a', 'g'].map(c => `<span class="bulb ${c} ${c === lit ? 'lit' : ''}"></span>`).join('')}</div>`;
+    if (!r) return `<div class="result">${light}<div class="empty">Your grade will appear here.<br>Aim for green: include all four GCSE elements.</div></div>`;
+    const label = { great: 'Great', average: 'Average', poor: 'Poor' }[r.grade];
+    const bars = ['g', 'c', 's', 'e'].map(k => {
+      const v = r.scores[k];
+      return `<div class="bar e-${k}"><span>${EL[k]}</span><span class="track"><i style="width:${Math.round(v * 100)}%"></i></span><span class="muted">${v >= 0.5 ? 'Present' : v > 0 ? 'Partial' : 'Missing'}</span></div>`;
+    }).join('');
+    const missing = ['g', 'c', 's', 'e'].filter(k => r.scores[k] < 0.5);
+    const tips = missing.length ? `<ul class="tips">${missing.map(k => `<li><b>${EL[k]}:</b> ${esc(TIPS[k])}</li>`).join('')}</ul>`
+      : (r.words < 40 ? `<ul class="tips"><li>Add a few more specifics, such as names, numbers or dates, to make it even sharper.</li></ul>` : '');
+    return `<div class="result">${light}<div><div class="verdict ${lit}">${label} · ${r.pct}/100</div><p class="muted">${esc(MESSAGES[r.grade])}</p>
+      <div class="bars">${bars}</div><div class="kw" id="kw"></div>${tips}</div></div>`;
+  }
+
+  function showResult() {
+    const box = $('#result'); if (!box) return;
+    box.innerHTML = resultHtml(state.result);
+    const kw = $('#kw', box);
+    if (kw && state.result) ['g', 'c', 's', 'e'].forEach(k => state.result.hits[k].slice(0, 3).forEach(h => {
+      const sp = document.createElement('span'); sp.className = 'e-' + k; sp.textContent = h; sp.title = EL[k]; kw.appendChild(sp);
+    }));
+  }
+
+  function grade() {
+    const ta = $('#prompt'); if (!ta) return;
+    state.draft = ta.value;
+    state.result = state.draft.trim() ? analysePrompt(state.draft) : null;
+    showResult();
+    document.dispatchEvent(new CustomEvent('aop:grade', { detail: { grade: state.result ? state.result.grade : null } }));
+  }
+
+  function render() {
+    buildSlides();
+    stage.innerHTML = slides.map((s, i) => `<section class="slide" data-i="${i}" aria-label="${esc(s.label)}"><div class="wrap${s.type === 'intro' ? ' fill' : ''}">${renderSlide(s, i)}</div></section>`).join('');
+    reel.innerHTML = slides.map((s, i) => {
+      const dots = s.type === 'scenario' ? ['tl-red', 'tl-amber', 'tl-green'].map(c => `<i style="--c:var(--${c})"></i>`).join('')
+        : s.type === 'grader' ? ['tl-red', 'tl-amber', 'tl-green'].map(c => `<i style="--c:var(--${c})"></i>`).join('')
+        : ['ms-red', 'ms-green', 'ms-blue', 'ms-yellow'].map(c => `<i class="sq" style="--c:var(--${c})"></i>`).join('');
+      return `<button class="frame" role="tab" data-go="${i}" aria-label="Slide ${i + 1}: ${esc(s.label)}"><span class="fn">${String(i + 1).padStart(2, '0')}</span><span class="fl">${esc(s.label)}</span><span class="fv">${dots}</span></button>`;
+    }).join('');
+    showResult();
+    go(Math.min(state.idx, slides.length - 1), true);
+  }
+
+  function go(i, force) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if (i === state.idx && !force) return;
+    const ta = $('#prompt'); if (ta) state.draft = ta.value;
+    state.idx = i;
+    stage.querySelectorAll('.slide').forEach((el, j) => { el.classList.toggle('active', j === i); el.classList.toggle('before', j < i); if (j === i) el.scrollTop = 0; });
+    reel.querySelectorAll('.frame').forEach((el, j) => { el.classList.toggle('active', j === i); el.setAttribute('aria-selected', j === i); });
+    const f = reel.children[i];
+    if (f) { const fr = f.getBoundingClientRect(), rr = reel.getBoundingClientRect(); reel.scrollTo({ left: Math.max(0, reel.scrollLeft + fr.left - rr.left - (reel.clientWidth - fr.width) / 2), behavior: 'smooth' }); }
+    $('#counter').textContent = `${i + 1} / ${slides.length}`;
+    $('#progbar').style.width = `${(i / (slides.length - 1)) * 100}%`;
+    $('#prev').disabled = i === 0; $('#next').disabled = i === slides.length - 1;
+    const s = slides[i];
+    document.dispatchEvent(new CustomEvent('aop:slide', { detail: { index: i, total: slides.length, type: s.type, actor: s.actor } }));
+    if (s.type === 'grader') document.dispatchEvent(new CustomEvent('aop:grade', { detail: { grade: state.result ? state.result.grade : null } }));
+  }
+
+  function setIndustry(k) {
+    state.ind = k; sel.value = k;
+    $('#subtitle').textContent = `GCSE prompting for ${INDUSTRIES[k].name}`;
+    const ta = $('#prompt'); if (ta) state.draft = ta.value;
+    render();
+    document.dispatchEvent(new CustomEvent('aop:industry', { detail: { key: k, icon: INDUSTRIES[k].icon } }));
+  }
+
+  function reset() {
+    state.draft = ''; state.result = null;
+    hl.checked = true; document.body.classList.remove('no-hl');
+    render(); go(0, true);
+    document.dispatchEvent(new CustomEvent('aop:grade', { detail: { grade: null } }));
+  }
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-go],[data-sample],#grade,#clear,#prev,#next,#reset');
+    if (!t) return;
+    if (t.dataset.go !== undefined) go(+t.dataset.go);
+    else if (t.dataset.sample) { const sc = INDUSTRIES[state.ind].scenarios[0]; const ta = $('#prompt'); ta.value = t.dataset.sample === 'great' ? greatText(sc) : sc[t.dataset.sample].t; grade(); }
+    else if (t.id === 'grade') grade();
+    else if (t.id === 'clear') { const ta = $('#prompt'); ta.value = ''; grade(); ta.focus(); }
+    else if (t.id === 'prev') go(state.idx - 1);
+    else if (t.id === 'next') go(state.idx + 1);
+    else if (t.id === 'reset') reset();
+  });
+  document.addEventListener('input', e => { if (e.target.id === 'prompt') state.draft = e.target.value; });
+  sel.addEventListener('change', () => setIndustry(sel.value));
+  hl.addEventListener('change', () => document.body.classList.toggle('no-hl', !hl.checked));
+  document.addEventListener('keydown', e => {
+    if (e.target.id === 'prompt' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); grade(); return; }
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(state.idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(state.idx - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+  });
+  let tx = null;
+  stage.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', e => { if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) go(state.idx + (dx < 0 ? 1 : -1)); tx = null; });
+
+  window.AOP = { go, get state() { return state; } };
+  state.idx = 0; setIndustry(sel.value || 'retail');
+})();
+</script>
+
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+const PI = Math.PI, TAU = PI * 2, rnd = (a, b) => a + Math.random() * (b - a), clamp01 = v => Math.min(1, Math.max(0, v));
+const easeOut = k => 1 - Math.pow(1 - k, 3);
+const easeBack = k => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TS = reduced ? 0.25 : 1;
+const root = document.documentElement;
+const css = (n, fb) => (getComputedStyle(root).getPropertyValue(n) || '').trim() || fb;
+const col = (n, fb) => { const c = new THREE.Color(); try { c.setStyle(css(n, fb)); } catch (e) { c.set(fb); } return c; };
+const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+/* ---------- renderer / scene ---------- */
+const canvas = document.getElementById('bg');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+renderer.setSize(innerWidth, innerHeight, false);
+renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 0, 12);
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(4, 6, 8); scene.add(key);
+const rim = new THREE.DirectionalLight(0x9fd8ff, 1.4); rim.position.set(-6, 3, -5); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 0.5));
+const VIEW_H = 2 * 12 * Math.tan(THREE.MathUtils.degToRad(20));
+
+const C = { red: col('--ms-red', '#F25022'), green: col('--ms-green', '#7FBA00'), blue: col('--ms-blue', '#00A4EF'), yellow: col('--ms-yellow', '#FFB900'), brand: new THREE.Color('#0078D4') };
+const BRAND = [C.red, C.green, C.blue, C.yellow];
+
+/* ---------- materials & helpers ---------- */
+const M = {
+  plastic: (c, o = {}) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.28, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.08, ...o }),
+  metal: (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.22, metalness: 1, ...o }),
+  glass: (c, o = {}) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.3, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 1, iridescenceIOR: 1.3, side: THREE.DoubleSide, depthWrite: false, ...o }),
+  glow: (c, i = 2.5) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: i, toneMapped: false }),
+};
+function texFrom(w, h, draw) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+}
+const GLOW = texFrom(128, 128, (g) => {
+  const r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.22, 'rgba(255,255,255,.55)'); r.addColorStop(0.6, 'rgba(255,255,255,.12)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128);
+});
+function glow(color, size, opacity = 0.9) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }));
+  s.scale.setScalar(size); s.renderOrder = 5; return s;
+}
+const UP = new THREE.Vector3(0, 1, 0);
+function stick(a, b, r, mat) {
+  const d = new THREE.Vector3().subVectors(b, a), len = d.length();
+  const m = new THREE.Mesh(new THREE.CapsuleGeometry(r, Math.max(0.001, len), 4, 10), mat);
+  m.position.copy(a).addScaledVector(d, 0.5); m.quaternion.setFromUnitVectors(UP, d.normalize()); return m;
+}
+const rbox = (w, h, d, r, mat) => new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 4, r), mat);
+const V = (x, y, z = 0) => new THREE.Vector3(x, y, z);
+const fontReady = new Promise(res => new FontLoader().load('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', res, undefined, () => res(null)));
+
+/* ---------- background: silk ribbons + stardust ---------- */
+const bg = new THREE.Group(); scene.add(bg);
+const ribbons = [];
+const RIB_VS = `
+uniform float uTime, uAmp, uPhase; varying vec2 vUv; varying float vTw;
+void main(){
+  float x = position.x;
+  float w = sin(x*.28 + uTime*.35 + uPhase)*1.3*uAmp + sin(x*.11 - uTime*.2 + uPhase*2.)*1.1;
+  float tw = sin(x*.18 + uTime*.5 + uPhase)*1.4;
+  float yy = position.y;
+  vec3 p = vec3(x, w + yy*cos(tw), yy*sin(tw));
+  vUv = uv; vTw = cos(tw);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.);
+}`;
+const RIB_FS = `
+uniform vec3 uColor; uniform float uOpacity; varying vec2 vUv; varying float vTw;
+void main(){
+  float edge = smoothstep(0., .35, vUv.y) * smoothstep(1., .65, vUv.y);
+  float ends = smoothstep(0., .12, vUv.x) * smoothstep(1., .88, vUv.x);
+  float shade = .5 + .5*abs(vTw);
+  gl_FragColor = vec4(uColor*shade, uOpacity*edge*ends);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+BRAND.forEach((c, i) => {
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uAmp: { value: 1 }, uPhase: { value: i * 1.7 }, uColor: { value: c.clone() }, uOpacity: { value: 0.3 } },
+    vertexShader: RIB_VS, fragmentShader: RIB_FS, transparent: true, depthWrite: false, side: THREE.DoubleSide
+  });
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(44, 1.2, 220, 1), mat);
+  m.position.set(0, [2.6, -0.8, 1.2, -3][i], -7 - i * 1.2); m.rotation.z = [-0.12, 0.08, 0.18, -0.05][i];
+  m.renderOrder = -10; bg.add(m); ribbons.push(m);
+});
+const DUST = 600;
+const dGeo = new THREE.BufferGeometry();
+const dPos = new Float32Array(DUST * 3), dSeed = new Float32Array(DUST), dCol = new Float32Array(DUST * 3);
+for (let i = 0; i < DUST; i++) {
+  dPos.set([rnd(-17, 17), rnd(-9, 9), rnd(-12, -2)], i * 3); dSeed[i] = Math.random();
+  const c = Math.random() < 0.45 ? new THREE.Color(1, 1, 1) : BRAND[i % 4]; dCol.set([c.r, c.g, c.b], i * 3);
+}
+dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+dGeo.setAttribute('aSeed', new THREE.BufferAttribute(dSeed, 1));
+dGeo.setAttribute('aColor', new THREE.BufferAttribute(dCol, 3));
+const dMat = new THREE.ShaderMaterial({
+  uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uOpacity: { value: 1 } },
+  vertexShader: `attribute float aSeed; attribute vec3 aColor; uniform float uTime, uPR; varying float vA; varying vec3 vC;
+  void main(){ vec3 p = position; p.y = mod(p.y + uTime*(.12 + aSeed*.25) + 9., 18.) - 9.; p.x += sin(uTime*.3 + aSeed*20.)*.5;
+    vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv;
+    gl_PointSize = (2. + aSeed*5.) * uPR * (10. / -mv.z); vA = .3 + .7*(.5 + .5*sin(uTime*2.2 + aSeed*40.)); vC = aColor; }`,
+  fragmentShader: `uniform float uOpacity; varying float vA; varying vec3 vC;
+  void main(){ float d = length(gl_PointCoord - .5); float a = smoothstep(.5, 0., d); gl_FragColor = vec4(vC, a*vA*uOpacity);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+  }`,
+  transparent: true, depthWrite: false
+});
+const dust = new THREE.Points(dGeo, dMat); dust.renderOrder = -9; bg.add(dust);
+
+const housingMats = [];
+function applyTheme() {
+  const dark = isDark();
+  ribbons.forEach(r => { r.material.blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending; r.material.uniforms.uOpacity.value = dark ? 0.32 : 0.16; r.material.needsUpdate = true; });
+  dMat.blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending; dMat.uniforms.uOpacity.value = dark ? 1 : 0.55; dMat.needsUpdate = true;
+  const hc = col('--tl-housing', '#2b2b2b'); housingMats.forEach(m => m.color.copy(hc));
+  renderer.toneMappingExposure = dark ? 1.1 : 1.0;
+}
+new MutationObserver(applyTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+/* ---------- confetti / sparkle (one InstancedMesh) ---------- */
+const CN = 400;
+const conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.1, 0.16), new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.35, metalness: 0.35 }), CN);
+conf.instanceMatrix.setUsage(THREE.DynamicDrawUsage); conf.frustumCulled = false; conf.renderOrder = 20; scene.add(conf);
+const parts = Array.from({ length: CN }, (_, i) => { conf.setColorAt(i, BRAND[i % 4]); return { life: 0, p: V(0, 0, 0), v: V(0, 0, 0), r: new THREE.Euler(), w: V(0, 0, 0), s: 1 }; });
+let cIdx = 0;
+const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3();
+function burst(pos, n = 60, power = 5, size = 1) {
+  if (reduced) return;
+  for (let k = 0; k < n; k++) {
+    const p = parts[cIdx]; cIdx = (cIdx + 1) % CN;
+    p.life = rnd(1.4, 2.6); p.p.copy(pos).add(V(rnd(-.2, .2), rnd(-.2, .2), rnd(0, .5)));
+    p.v.set(rnd(-1, 1), rnd(-0.2, 1.3), rnd(-0.6, 1)).normalize().multiplyScalar(power * rnd(0.4, 1.2));
+    p.r.set(rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)); p.w.set(rnd(-12, 12), rnd(-12, 12), rnd(-12, 12)); p.s = size * rnd(0.6, 1.4);
+  }
+}
+function updateConfetti(dt) {
+  for (let i = 0; i < CN; i++) {
+    const p = parts[i];
+    if (p.life > 0) {
+      p.life -= dt; p.v.y -= 5.5 * dt; p.v.multiplyScalar(1 - 1.8 * dt); p.p.addScaledVector(p.v, dt);
+      p.r.x += p.w.x * dt; p.r.y += p.w.y * dt; p.r.z += p.w.z * dt;
+      _q.setFromEuler(p.r); _s.setScalar(Math.max(0, p.s * Math.min(1, p.life * 2)));
+    } else _s.setScalar(0);
+    _m.compose(p.p, _q, _s); conf.setMatrixAt(i, _m);
+  }
+  conf.instanceMatrix.needsUpdate = true;
+}
+
+/* ---------- ACTORS ---------- */
+function makeLogo() {
+  const g = new THREE.Group(), tiles = [], orbs = [];
+  const geo = new RoundedBoxGeometry(0.95, 0.95, 0.3, 4, 0.08);
+  [[-.525, .525], [.525, .525], [-.525, -.525], [.525, -.525]].forEach((p, i) => {
+    const m = new THREE.Mesh(geo, M.plastic(BRAND[i], { emissive: BRAND[i], emissiveIntensity: 0.12 }));
+    m.userData.home = V(p[0], p[1], 0); m.userData.from = V(p[0], p[1], 0); m.position.copy(m.userData.home); g.add(m); tiles.push(m);
+  });
+  for (let i = 0; i < 10; i++) {
+    const c = BRAND[i % 4];
+    const o = new THREE.Mesh(new THREE.SphereGeometry(0.06 + (i % 3) * 0.035, 24, 16), M.plastic(c, { emissive: c, emissiveIntensity: 0.5 }));
+    o.userData = { r: 1.5 + (i % 3) * 0.2, sp: rnd(0.45, 0.9) * (i % 2 ? 1 : -1), ph: i / 10 * TAU, tilt: rnd(-0.6, 0.6) }; g.add(o); orbs.push(o);
+  }
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.012, 8, 180), M.metal(0xffffff, { roughness: 0.12 })); ring.rotation.x = 1.2; g.add(ring);
+  const ring2 = ring.clone(); ring2.scale.setScalar(1.12); ring2.rotation.set(1.9, 0.4, 0); g.add(ring2);
+  const halo = glow(C.blue, 4.2, 0.35); halo.position.z = -0.4; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.8, h: 3.8,
+    enter(t) { t0 = t; tiles.forEach(m => m.userData.from.set(rnd(-7, 7), rnd(-5, 5), rnd(-4, 4))); },
+    update(t) {
+      tiles.forEach((m, i) => {
+        const k = clamp01((t - t0 - i * 0.14) / 0.95), e = easeOut(k);
+        m.position.lerpVectors(m.userData.from, m.userData.home, k >= 1 ? 1 : easeBack(k));
+        m.position.z += Math.sin(t * 1.6 + i * 1.3) * 0.06;
+        m.rotation.set((1 - e) * 5 + Math.sin(t * 0.9 + i) * 0.05, (1 - e) * 4, (1 - e) * 2);
+      });
+      orbs.forEach(o => { const u = o.userData, a = t * u.sp + u.ph; o.position.set(Math.cos(a) * u.r, Math.sin(a) * u.r * u.tilt, Math.sin(a) * u.r * 0.7); });
+      ring.rotation.z = t * 0.25; ring2.rotation.z = -t * 0.18; halo.material.opacity = 0.28 + Math.sin(t * 2) * 0.08;
+    }
+  };
+}
+
+function makeGCSE() {
+  const g = new THREE.Group(), cells = [];
+  const letters = ['G', 'C', 'S', 'E'];
+  const tileGeo = new RoundedBoxGeometry(0.92, 0.92, 0.26, 4, 0.1);
+  letters.forEach((L, i) => {
+    const cell = new THREE.Group(); cell.position.x = (i - 1.5) * 1.12;
+    const tile = new THREE.Mesh(tileGeo, M.plastic(BRAND[i], { emissive: BRAND[i], emissiveIntensity: 0.15 })); cell.add(tile);
+    const flat = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.8), new THREE.MeshBasicMaterial({ transparent: true, map: texFrom(128, 128, (c) => { c.fillStyle = '#fff'; c.font = '800 96px Segoe UI, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(L, 64, 70); }) }));
+    flat.position.z = 0.14; cell.add(flat); cell.userData.flat = flat;
+    const gl = glow(BRAND[i], 1.6, 0.35); gl.position.z = -0.3; cell.add(gl);
+    g.add(cell); cells.push(cell);
+  });
+  const sparks = [];
+  for (let i = 0; i < 14; i++) {
+    const s = new THREE.Mesh(new THREE.OctahedronGeometry(rnd(0.04, 0.08)), M.glow(BRAND[i % 4], 1.6));
+    s.userData = { x: rnd(-2.2, 2.2), y: rnd(-0.9, 0.9), z: rnd(-0.6, 0.8), ph: rnd(0, TAU) }; g.add(s); sparks.push(s);
+  }
+  fontReady.then(font => {
+    if (!font) return;
+    const white = M.plastic(0xffffff, { roughness: 0.18 });
+    cells.forEach((cell, i) => {
+      const geo = new TextGeometry(letters[i], { font, size: 0.52, height: 0.14, curveSegments: 6, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.018, bevelSegments: 3 });
+      geo.center(); const m = new THREE.Mesh(geo, white); m.position.z = 0.22; cell.add(m); cell.remove(cell.userData.flat);
+    });
+  });
+  let t0 = -99;
+  return {
+    obj: g, w: 4.8, h: 2.2,
+    enter(t) { t0 = t; },
+    update(t) {
+      cells.forEach((c, i) => {
+        const k = clamp01((t - t0 - i * 0.12) / 0.7);
+        c.position.y = Math.sin(t * 2 + i * 0.8) * 0.14 + (1 - easeBack(k)) * 2.5;
+        c.rotation.y = Math.sin(t * 1.2 + i) * 0.35 + (1 - easeOut(k)) * TAU;
+        c.rotation.x = Math.cos(t * 1.1 + i) * 0.12;
+      });
+      sparks.forEach(s => { const u = s.userData; s.position.set(u.x + Math.sin(t * 0.7 + u.ph) * 0.2, u.y + Math.sin(t * 1.3 + u.ph) * 0.15, u.z); s.rotation.set(t * 2 + u.ph, t * 1.5, 0); s.scale.setScalar(0.6 + 0.5 * Math.abs(Math.sin(t * 2 + u.ph))); });
+    }
+  };
+}
+
+function makeBag() {
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig);
+  const sh = new THREE.Shape(); sh.moveTo(-0.72, -0.8); sh.lineTo(0.72, -0.8); sh.lineTo(0.82, 0.78); sh.lineTo(-0.82, 0.78); sh.closePath();
+  const bodyGeo = new THREE.ExtrudeGeometry(sh, { depth: 0.5, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 4, curveSegments: 4 });
+  bodyGeo.translate(0, 0, -0.25);
+  rig.add(new THREE.Mesh(bodyGeo, M.plastic(C.blue, { roughness: 0.45, clearcoat: 0.6 })));
+  const fold = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.1, 0.62), M.plastic(C.brand, { roughness: 0.4 })); fold.position.y = 0.76; rig.add(fold);
+  const handleMat = M.plastic(0xffffff, { roughness: 0.3 });
+  [0.2, -0.2].forEach(z => { const h = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.05, 12, 40, PI), handleMat); h.position.set(0, 0.8, z); rig.add(h); });
+  const logo = new THREE.Group();
+  [[-1, 1], [1, 1], [-1, -1], [1, -1]].forEach((p, i) => { const b = rbox(0.24, 0.24, 0.05, 0.03, M.plastic(BRAND[i])); b.position.set(p[0] * 0.135, p[1] * 0.135, 0); logo.add(b); });
+  logo.position.set(0, 0.02, 0.33); rig.add(logo);
+  const tagPivot = new THREE.Group(); tagPivot.position.set(0.3, 0.98, 0.2); rig.add(tagPivot);
+  tagPivot.add(stick(V(0, 0, 0), V(0, -0.35, 0), 0.008, M.metal(0xdddddd)));
+  const tag = rbox(0.26, 0.38, 0.03, 0.04, M.plastic(C.yellow, { emissive: C.yellow, emissiveIntensity: 0.15 })); tag.position.y = -0.52; tagPivot.add(tag);
+  const gifts = [];
+  [C.red, C.green, C.yellow].forEach((c, i) => {
+    const gift = new THREE.Group();
+    gift.add(rbox(0.38, 0.38, 0.38, 0.05, M.plastic(c)));
+    const rib = M.plastic(0xffffff, { roughness: 0.2 });
+    gift.add(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.08), rib), new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.4, 0.4), rib));
+    [-1, 1].forEach(s => { const bow = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.025, 8, 20), rib); bow.position.set(s * 0.07, 0.24, 0); bow.rotation.y = s * 0.6; gift.add(bow); });
+    gift.userData = { ph: i / 3 * TAU }; g.add(gift); gifts.push(gift);
+  });
+  const coins = [];
+  const coinMat = M.metal(0xffc83d, { roughness: 0.18 });
+  for (let i = 0; i < 6; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.035, 32), coinMat); c.userData = { ph: rnd(0, TAU), r: rnd(1.1, 1.5), y: rnd(-1, 1.1) }; g.add(c); coins.push(c); }
+  return {
+    obj: g, w: 3.6, h: 3.4,
+    update(t) {
+      rig.position.y = Math.sin(t * 1.5) * 0.06; rig.rotation.z = Math.sin(t * 1.1) * 0.05;
+      tagPivot.rotation.z = Math.sin(t * 2.6) * 0.35; tagPivot.rotation.x = Math.sin(t * 1.9) * 0.2;
+      gifts.forEach(gf => { const a = t * 0.6 + gf.userData.ph; gf.position.set(Math.cos(a) * 1.45, Math.sin(a * 2) * 0.25 - 0.2, Math.sin(a) * 0.9); gf.rotation.set(t * 0.8, t * 1.1 + gf.userData.ph, 0); });
+      coins.forEach(c => { const u = c.userData, a = t * 0.9 + u.ph; c.position.set(Math.cos(a) * u.r, u.y + Math.sin(t * 2 + u.ph) * 0.15, Math.sin(a) * u.r * 0.7); c.rotation.set(PI / 2, 0, t * 4 + u.ph); });
+    }
+  };
+}
+
+function makeShield() {
+  const g = new THREE.Group();
+  const sh = new THREE.Shape();
+  sh.moveTo(0, 1); sh.bezierCurveTo(0.35, 0.82, 0.7, 0.8, 0.9, 0.78); sh.lineTo(0.9, 0.1);
+  sh.bezierCurveTo(0.9, -0.5, 0.45, -0.85, 0, -1.08); sh.bezierCurveTo(-0.45, -0.85, -0.9, -0.5, -0.9, 0.1);
+  sh.lineTo(-0.9, 0.78); sh.bezierCurveTo(-0.7, 0.8, -0.35, 0.82, 0, 1);
+  const outerGeo = new THREE.ExtrudeGeometry(sh, { depth: 0.3, bevelEnabled: true, bevelThickness: 0.07, bevelSize: 0.06, bevelSegments: 5, curveSegments: 24 });
+  outerGeo.translate(0, 0, -0.15);
+  g.add(new THREE.Mesh(outerGeo, M.plastic(C.brand, { metalness: 0.35, roughness: 0.22 })));
+  const innerGeo = new THREE.ExtrudeGeometry(sh, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 3, curveSegments: 24 });
+  const inner = new THREE.Mesh(innerGeo, M.metal(0xf2f6fa, { roughness: 0.15 })); inner.scale.set(0.78, 0.78, 1); inner.position.set(0, 0.02, 0.2); g.add(inner);
+  const check = new THREE.Group(), cm = M.glow(C.green, 1.8);
+  check.add(stick(V(-0.38, 0.02), V(-0.1, -0.28), 0.085, cm), stick(V(-0.1, -0.28), V(0.42, 0.36), 0.085, cm));
+  check.position.z = 0.36; g.add(check);
+  const cg = glow(C.green, 1.6, 0.45); cg.position.z = 0.4; g.add(cg);
+  const halo = glow(C.blue, 3.4, 0.3); halo.position.z = -0.5; g.add(halo);
+  const ringG = new THREE.Group(); ringG.rotation.set(1.15, 0.25, 0); g.add(ringG);
+  ringG.add(new THREE.Mesh(new THREE.TorusGeometry(1.45, 0.014, 8, 180), M.metal(0xffffff, { roughness: 0.1 })));
+  const orbs = [];
+  for (let i = 0; i < 12; i++) { const c = BRAND[i % 4]; const o = new THREE.Mesh(new THREE.SphereGeometry(i % 3 ? 0.06 : 0.1, 20, 14), M.plastic(c, { emissive: c, emissiveIntensity: 0.6 })); o.userData.ph = i / 12 * TAU; ringG.add(o); orbs.push(o); }
+  let t0 = -99;
+  return {
+    obj: g, w: 3.3, h: 3.0,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.5) / 0.6);
+      check.scale.setScalar(k >= 1 ? 1 + Math.sin(t * 3) * 0.04 : easeBack(k));
+      cg.material.opacity = 0.3 + 0.2 * Math.sin(t * 3);
+      orbs.forEach(o => { const a = t * 0.7 + o.userData.ph; o.position.set(Math.cos(a) * 1.45, Math.sin(a) * 1.45, 0); });
+      ringG.rotation.z = t * 0.1; g.position.y = Math.sin(t * 1.4) * 0.05;
+    }
+  };
+}
+
+function makeBottle() {
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig);
+  const prof = [[0.001, -1.1], [0.5, -1.1], [0.56, -1.05], [0.58, -0.9], [0.58, 0.25], [0.54, 0.45], [0.36, 0.7], [0.22, 0.86], [0.2, 1.04], [0.23, 1.08], [0.23, 1.12]].map(p => new THREE.Vector2(p[0], p[1]));
+  const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, 56), M.glass(0xe8fbff, { opacity: 0.28 })); glass.renderOrder = 3; rig.add(glass);
+  const lprof = [[0.001, -1.04], [0.5, -1.04], [0.54, -0.92], [0.54, 0.12], [0.001, 0.12]].map(p => new THREE.Vector2(p[0], p[1]));
+  const liquid = new THREE.Mesh(new THREE.LatheGeometry(lprof, 48), M.plastic(C.green, { transparent: true, opacity: 0.85, roughness: 0.08, emissive: C.green, emissiveIntensity: 0.25 })); liquid.renderOrder = 2; rig.add(liquid);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.24, 40), M.plastic(C.red)); cap.position.y = 1.22; rig.add(cap);
+  for (let i = 0; i < 3; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.262, 0.012, 6, 40), M.plastic(C.red)); r.rotation.x = PI / 2; r.position.y = 1.14 + i * 0.07; rig.add(r); }
+  const labelTex = texFrom(512, 160, (c, w, h) => {
+    c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, h);
+    const gr = c.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, '#FFB900'); gr.addColorStop(1, '#F25022');
+    c.fillStyle = gr; c.fillRect(0, 22, w, h - 44);
+    c.fillStyle = '#fff'; c.font = '800 66px Segoe UI, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('FRESH', w * 0.25, h / 2 + 3); c.fillText('FRESH', w * 0.75, h / 2 + 3);
+  });
+  const label = new THREE.Mesh(new THREE.CylinderGeometry(0.595, 0.595, 0.62, 56, 1, true), new THREE.MeshStandardMaterial({ map: labelTex, roughness: 0.5 })); label.position.y = -0.35; rig.add(label);
+  const bubbles = [];
+  const bMat = M.plastic(0xffffff, { transparent: true, opacity: 0.7, emissive: 0xffffff, emissiveIntensity: 0.2 });
+  for (let i = 0; i < 16; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(rnd(0.025, 0.055), 12, 10), bMat); b.userData = { a: rnd(0, TAU), r: rnd(0, 0.42), sp: rnd(0.25, 0.6), o: Math.random() }; rig.add(b); bubbles.push(b); }
+  const dropProf = [[0.001, -0.15], [0.08, -0.13], [0.11, -0.05], [0.09, 0.05], [0.04, 0.14], [0.001, 0.21]].map(p => new THREE.Vector2(p[0], p[1]));
+  const dropGeo = new THREE.LatheGeometry(dropProf, 24);
+  const drops = [];
+  for (let i = 0; i < 5; i++) { const c = BRAND[(i + 2) % 4]; const d = new THREE.Mesh(dropGeo, M.plastic(c, { emissive: c, emissiveIntensity: 0.35 })); d.userData.ph = i / 5 * TAU; g.add(d); drops.push(d); }
+  const halo = glow(C.green, 3.2, 0.25); halo.position.z = -0.6; g.add(halo);
+  return {
+    obj: g, w: 3.2, h: 3.0,
+    update(t) {
+      rig.rotation.z = Math.sin(t * 1.3) * 0.08; rig.position.y = Math.sin(t * 1.6) * 0.05;
+      bubbles.forEach(b => { const u = b.userData, k = (u.o + t * u.sp * 0.4) % 1; b.position.set(Math.cos(u.a + t) * u.r, -1 + k * 1.1, Math.sin(u.a + t) * u.r); b.scale.setScalar(Math.sin(k * PI)); });
+      drops.forEach(d => { const a = t * 0.8 + d.userData.ph; d.position.set(Math.cos(a) * 1.35, Math.sin(a * 1.5) * 0.6, Math.sin(a) * 0.8); d.rotation.z = Math.sin(a) * 0.4; });
+    }
+  };
+}
+
+
+function makePlay() {
+  const g = new THREE.Group(), tv = new THREE.Group(); g.add(tv);
+  tv.add(rbox(2.4, 1.5, 0.16, 0.08, M.plastic(0x1b1b1f, { roughness: 0.3 })));
+  const scrTex = texFrom(256, 160, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#F25022'); gr.addColorStop(0.55, '#ff7a3d'); gr.addColorStop(1, '#FFB900'); c.fillStyle = gr; c.fillRect(0, 0, w, h); });
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(2.22, 1.32), new THREE.MeshBasicMaterial({ map: scrTex, toneMapped: false })); scr.position.z = 0.085; tv.add(scr);
+  const tri = new THREE.Shape(); tri.moveTo(-0.22, -0.3); tri.lineTo(0.34, 0); tri.lineTo(-0.22, 0.3); tri.closePath();
+  const playGeo = new THREE.ExtrudeGeometry(tri, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 4 });
+  const play = new THREE.Mesh(playGeo, M.plastic(0xffffff, { roughness: 0.15 })); play.position.set(0, 0.08, 0.12); tv.add(play);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.035, 12, 64), M.plastic(0xffffff, { roughness: 0.2 })); ring.position.set(0, 0.08, 0.12); tv.add(ring);
+  const bars = [];
+  for (let i = 0; i < 9; i++) { const c = BRAND[i % 4]; const b = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 0.05), M.glow(c, 1.4)); b.position.set(-0.6 + i * 0.15, -0.58, 0.12); tv.add(b); bars.push(b); }
+  const rec = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), M.glow(new THREE.Color(1, 0.1, 0.1), 3)); rec.position.set(0.98, 0.55, 0.12); tv.add(rec);
+  const stand = M.metal(0xb8c0c8, { roughness: 0.3 });
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.45, 20), stand); neck.position.y = -0.95; tv.add(neck);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.06, 40), stand); base.position.y = -1.18; tv.add(base);
+  const frameTex = texFrom(128, 96, (c, w, h) => {
+    c.fillStyle = '#111'; c.fillRect(0, 0, w, h); c.fillStyle = '#fff';
+    for (let i = 0; i < 6; i++) { c.fillRect(8 + i * 20, 6, 10, 8); c.fillRect(8 + i * 20, h - 14, 10, 8); }
+    const gr = c.createLinearGradient(0, 20, w, h - 20); gr.addColorStop(0, '#00A4EF'); gr.addColorStop(1, '#7FBA00'); c.fillStyle = gr; c.fillRect(10, 22, w - 20, h - 44);
+  });
+  const frames = [];
+  for (let i = 0; i < 5; i++) { const f = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.375), new THREE.MeshStandardMaterial({ map: frameTex, side: THREE.DoubleSide, roughness: 0.4, emissive: 0xffffff, emissiveMap: frameTex, emissiveIntensity: 0.35 })); f.userData.ph = i / 5 * TAU; g.add(f); frames.push(f); }
+  return {
+    obj: g, w: 3.6, h: 3.0,
+    update(t) {
+      tv.position.y = Math.sin(t * 1.3) * 0.05;
+      const p = 1 + Math.max(0, Math.sin(t * 3)) * 0.12; play.scale.set(p, p, 1); ring.scale.setScalar(1 + Math.sin(t * 3 - 0.6) * 0.05);
+      bars.forEach((b, i) => { const v = 0.08 + Math.abs(Math.sin(t * (3 + i * 0.7) + i * 1.3)) * 0.22; b.scale.y = v; b.position.y = -0.62 + v / 2; });
+      rec.visible = Math.sin(t * 4) > -0.2;
+      frames.forEach(f => { const a = t * 0.55 + f.userData.ph; f.position.set(Math.cos(a) * 1.7, Math.sin(a * 2) * 0.35 + 0.1, Math.sin(a) * 0.9); f.rotation.set(Math.sin(a) * 0.3, -a + PI / 2, Math.cos(a) * 0.2); });
+    }
+  };
+}
+
+function makeTower() {
+  const g = new THREE.Group();
+  const steel = M.metal(0xc9d1d9, { roughness: 0.28 }), thin = M.metal(0x9aa6b2, { roughness: 0.35 });
+  const B = 0.62, T = 0.09, y0 = -1.35, y1 = 0.95;
+  const half = y => B + (T - B) * ((y - y0) / (y1 - y0));
+  const corners = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
+  corners.forEach(c => g.add(stick(V(c[0] * B, y0, c[1] * B), V(c[0] * T, y1, c[1] * T), 0.035, steel)));
+  const levels = [-1.35, -0.75, -0.2, 0.3, 0.7];
+  levels.forEach((y, li) => {
+    const h = half(y);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(h * Math.SQRT2, 0.022, 6, 4), steel); ring.rotation.set(PI / 2, 0, PI / 4); ring.position.y = y; g.add(ring);
+    if (li < levels.length - 1) {
+      const yn = levels[li + 1], hn = half(yn);
+      for (let k = 0; k < 4; k++) {
+        const a = corners[k], b = corners[(k + 1) % 4];
+        g.add(stick(V(a[0] * h, y, a[1] * h), V(b[0] * hn, yn, b[1] * hn), 0.012, thin));
+        g.add(stick(V(b[0] * h, y, b[1] * h), V(a[0] * hn, yn, a[1] * hn), 0.012, thin));
+      }
+    }
+  });
+  for (let i = 0; i < 3; i++) { const a = i / 3 * TAU; const p = rbox(0.12, 0.42, 0.06, 0.02, M.plastic(0xffffff, { roughness: 0.35 })); p.position.set(Math.cos(a) * 0.2, 0.75, Math.sin(a) * 0.2); p.rotation.y = -a + PI / 2; g.add(p); }
+  g.add(stick(V(0, 0.95), V(0, 1.2), 0.02, steel));
+  const tipCol = new THREE.Color(1, 0.15, 0.1);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.08, 20, 14), M.glow(tipCol, 3)); tip.position.y = 1.24; g.add(tip);
+  const tipGlow = glow(tipCol, 0.9, 0.8); tipGlow.position.y = 1.24; g.add(tipGlow);
+  const waves = [];
+  for (let i = 0; i < 4; i++) {
+    const w = new THREE.Mesh(new THREE.TorusGeometry(1, 0.025, 8, 80, PI * 0.7), new THREE.MeshBasicMaterial({ color: BRAND[i], transparent: true, depthWrite: false, toneMapped: false }));
+    w.position.y = 1.24; w.rotation.z = PI * 0.15; w.userData.o = i / 4; g.add(w); waves.push(w);
+  }
+  const phones = [];
+  for (let i = 0; i < 2; i++) {
+    const ph = new THREE.Group();
+    ph.add(rbox(0.34, 0.64, 0.05, 0.05, M.plastic(0x1b1b1f)));
+    const s = new THREE.Mesh(new THREE.PlaneGeometry(0.28, 0.54), M.glow(i ? C.green : C.blue, 1.1)); s.position.z = 0.027; ph.add(s);
+    ph.userData.ph = i * PI; g.add(ph); phones.push(ph);
+  }
+  return {
+    obj: g, w: 3.4, h: 3.4,
+    update(t) {
+      const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+      tip.material.emissiveIntensity = 1.5 + pulse * 2.5; tipGlow.material.opacity = 0.4 + pulse * 0.5; tipGlow.scale.setScalar(0.7 + pulse * 0.5);
+      waves.forEach((w, i) => { const k = (t * 0.45 + w.userData.o) % 1; w.scale.setScalar(0.15 + k * 1.6); w.material.opacity = (1 - k) * 0.9; w.material.color.copy(BRAND[(i + Math.floor(t * 0.45 + w.userData.o)) % 4]); });
+      phones.forEach(p => { const a = t * 0.6 + p.userData.ph; p.position.set(Math.cos(a) * 1.35, -0.3 + Math.sin(t * 1.5 + p.userData.ph) * 0.2, Math.sin(a) * 0.8); p.rotation.set(0, -a + PI / 2, Math.sin(t + p.userData.ph) * 0.2); });
+    }
+  };
+}
+
+function makeBulb() {
+  const g = new THREE.Group();
+  const pts = [V(0.3, -0.6), V(0.3, -0.55)];
+  for (let i = 0; i <= 40; i++) { const a = -0.9 + (i / 40) * (PI / 2 + 0.9); pts.push(V(0.75 * Math.cos(a), 0.35 + 0.75 * Math.sin(a))); }
+  pts[pts.length - 1].x = 0.001;
+  const glass = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p.x, p.y)), 56), M.glass(0xfff6d8, { opacity: 0.26 })); glass.renderOrder = 3; g.add(glass);
+  const metal = M.metal(0xd6dbe0, { roughness: 0.25 });
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.27, 0.45, 40), metal); base.position.y = -0.82; g.add(base);
+  [-0.68, -0.8, -0.92].forEach(y => { const r = new THREE.Mesh(new THREE.TorusGeometry(0.305, 0.03, 10, 40), metal); r.rotation.x = PI / 2; r.position.y = y; g.add(r); });
+  const contact = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.08, 0.1, 24), M.metal(0x333333)); contact.position.y = -1.08; g.add(contact);
+  const helix = []; for (let i = 0; i <= 160; i++) { const k = i / 160, a = k * TAU * 8; helix.push(V(-0.25 + k * 0.5, 0.25 + Math.sin(a) * 0.05, Math.cos(a) * 0.05)); }
+  const filMat = M.glow(C.yellow, 3);
+  const fil = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(helix), 320, 0.012, 6), filMat); g.add(fil);
+  g.add(stick(V(-0.25, 0.25), V(-0.1, -0.55), 0.01, metal), stick(V(0.25, 0.25), V(0.1, -0.55), 0.01, metal));
+  const light = new THREE.PointLight(0xffc860, 3, 5, 1.5); light.position.y = 0.25; g.add(light);
+  const halo = glow(C.yellow, 2.4, 0.6); halo.position.y = 0.3; g.add(halo);
+  const rays = [];
+  const rayMat = M.glow(C.yellow, 2);
+  for (let i = 0; i < 12; i++) {
+    const a = i / 12 * TAU; const r = stick(V(0, 1.08), V(0, 1.42), 0.035, rayMat);
+    const pv = new THREE.Group(); pv.position.y = 0.35; pv.rotation.z = a; r.position.y -= 0.35 - 0.0; pv.add(r); g.add(pv); rays.push(pv);
+  }
+  return {
+    obj: g, w: 3.3, h: 3.3,
+    update(t) {
+      const f = 0.75 + 0.25 * Math.sin(t * 3) + 0.05 * Math.sin(t * 17);
+      filMat.emissiveIntensity = 2 + f * 2; light.intensity = 2 + f * 2; halo.material.opacity = 0.35 + f * 0.35; halo.scale.setScalar(2 + f * 0.6);
+      rays.forEach((r, i) => { const s = 0.7 + 0.35 * Math.max(0, Math.sin(t * 3 - i * 0.6)); r.scale.setScalar(s); });
+      g.rotation.z = Math.sin(t * 0.9) * 0.06;
+    }
+  };
+}
+
+function makeTraffic() {
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig);
+  const hMat = M.plastic(col('--tl-housing', '#2b2b2b'), { roughness: 0.35, clearcoat: 0.6 }); housingMats.push(hMat);
+  rig.add(rbox(0.95, 2.5, 0.55, 0.12, hMat));
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.8, 20), M.metal(0x9aa6b2)); pole.position.y = -1.6; rig.add(pole);
+  const ON = [col('--tl-red', '#d13438'), col('--tl-amber', '#ffb900'), col('--tl-green', '#107c10')];
+  const OFF = col('--tl-off', '#4a4a4a');
+  const lenses = [0.8, 0, -0.8].map((y, i) => {
+    const mat = new THREE.MeshStandardMaterial({ color: OFF.clone(), emissive: ON[i].clone(), emissiveIntensity: 0, roughness: 0.15, toneMapped: false });
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.32, 32, 24), mat); l.scale.z = 0.45; l.position.set(0, y, 0.28); rig.add(l);
+    const visor = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.32, 32, 1, true, -PI / 2, PI), hMat); visor.rotation.x = -PI / 2; visor.position.set(0, y, 0.44); rig.add(visor);
+    const gl = glow(ON[i], 1.5, 0); gl.position.set(0, y, 0.5); rig.add(gl);
+    return { l, mat, gl, cur: 0 };
+  });
+  let grade = null, rt = -99, rk = null;
+  const IDX = { poor: 0, average: 1, great: 2 };
+  return {
+    obj: g, w: 2.0, h: 3.4,
+    setGrade(gr, t) { grade = gr; if (gr) { rt = t; rk = gr; } },
+    update(t, dt) {
+      const lit = grade ? IDX[grade] : Math.floor(t * 1.4) % 3;
+      lenses.forEach((L, i) => {
+        const target = i === lit ? (grade ? 2.6 + Math.sin(t * 4) * 0.4 : 1.2) : (grade ? 0.02 : 0.08);
+        L.cur += (target - L.cur) * Math.min(1, dt * 10);
+        L.mat.emissiveIntensity = L.cur; L.mat.color.copy(OFF).lerp(ON[i], Math.min(1, L.cur / 1.2));
+        L.gl.material.opacity = Math.min(1, L.cur / 2.2); L.gl.scale.setScalar(1.1 + L.cur * 0.25);
+      });
+      const e = t - rt; rig.position.set(0, 0, 0); rig.rotation.set(0, 0, 0);
+      if (e < 1.4) {
+        const d = Math.exp(-e * 3);
+        if (rk === 'great') rig.position.y = Math.abs(Math.sin(e * 9)) * 0.45 * d;
+        else if (rk === 'poor') rig.position.x = Math.sin(e * 40) * 0.14 * d;
+        else if (rk === 'average') rig.rotation.z = Math.sin(e * 12) * 0.18 * d;
+      }
+    }
+  };
+}
+
+/* ---------- holders: map DOM anchors to 3D actors ---------- */
+const factories = { logo: makeLogo, gcse: makeGCSE, bag: makeBag, shield: makeShield, bottle: makeBottle, play: makePlay, tower: makeTower, bulb: makeBulb, traffic: makeTraffic };
+const holders = {};
+function holder(k) {
+  if (holders[k]) return holders[k];
+  if (!factories[k]) return null;
+  const a = factories[k](), outer = new THREE.Group(), spin = new THREE.Group();
+  outer.add(spin); spin.add(a.obj); outer.visible = false; scene.add(outer);
+  return (holders[k] = { a, outer, spin, s: 0, v: 0, target: 0, pos: V(0, 0, 0), has: false, spin0: -99, pending: 0 });
+}
+const pointer = { x: 0, y: 0, sx: 0, sy: 0 };
+addEventListener('pointermove', e => { pointer.x = e.clientX / innerWidth * 2 - 1; pointer.y = -(e.clientY / innerHeight * 2 - 1); }, { passive: true });
+
+function layout() {
+  for (const k in holders) holders[k].target = 0;
+  const wpp = VIEW_H / innerHeight;
+  document.querySelectorAll('#stage .slide.active .anchor[data-actor]').forEach(el => {
+    const h = holder(el.dataset.actor); if (!h) return;
+    const r = el.getBoundingClientRect(); if (r.width < 4 || r.height < 4) return;
+    const nx = (r.left + r.width / 2) / innerWidth * 2 - 1, ny = -((r.top + r.height / 2) / innerHeight * 2 - 1);
+    h.pos.set(nx * VIEW_H / 2 * camera.aspect, ny * VIEW_H / 2, 0);
+    h.target = Math.min(r.width * wpp / h.a.w, r.height * wpp / h.a.h);
+    if (!h.has) { h.outer.position.copy(h.pos); h.has = true; }
+  });
+}
+let T = 0, kick = 0;
+function enterActor(k, n = 50) { const h = holder(k); if (!h) return; h.spin0 = T; h.a.enter && h.a.enter(T); h.pending = n; }
+document.addEventListener('aop:slide', e => { kick = 1; if (e.detail && e.detail.actor) enterActor(e.detail.actor); });
+document.addEventListener('aop:grade', e => {
+  const gr = e.detail ? e.detail.grade : null, h = holder('traffic');
+  h.a.setGrade(gr, T); if (gr === 'great') h.pending = 160; else if (gr) h.pending = 0;
+});
+document.querySelectorAll('#stage .slide.active .anchor[data-actor]').forEach(el => enterActor(el.dataset.actor));
+(() => { const ta = document.querySelector('#result .result'); if (ta && window.AOP && AOP.state && AOP.state.result) holder('traffic').a.setGrade(AOP.state.result.grade, 0); })();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(innerWidth, innerHeight, false);
+  dMat.uniforms.uPR.value = renderer.getPixelRatio();
+});
+applyTheme();
+
+const clock = new THREE.Clock();
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 1 / 30) * TS; T += dt;
+  pointer.sx += (pointer.x - pointer.sx) * Math.min(1, dt * 4); pointer.sy += (pointer.y - pointer.sy) * Math.min(1, dt * 4);
+  kick *= Math.exp(-dt * 1.5);
+  ribbons.forEach(r => { r.material.uniforms.uTime.value = T; r.material.uniforms.uAmp.value = 1 + kick * 1.4; });
+  dMat.uniforms.uTime.value = T;
+  bg.position.set(-pointer.sx * 0.6, -pointer.sy * 0.35, 0); bg.rotation.z = pointer.sx * 0.02;
+  layout();
+  for (const k in holders) {
+    const h = holders[k];
+    h.v += (120 * (h.target - h.s) - 12 * h.v) * dt; h.s += h.v * dt;
+    if (h.s < 0) { h.s = 0; h.v = Math.max(0, h.v); }
+    h.outer.visible = h.s > 0.01; h.outer.scale.setScalar(h.s);
+    h.outer.position.lerp(h.pos, 1 - Math.exp(-12 * dt));
+    if (h.pending && h.has && h.target > 0) { burst(h.pos, h.pending, h.pending > 100 ? 7 : 4.5, h.pending > 100 ? 1.2 : 0.8); h.pending = 0; }
+    if (!h.outer.visible) continue;
+    const sk = clamp01((T - h.spin0) / 1.1);
+    h.spin.rotation.y = (sk < 1 ? easeOut(sk) * TAU : 0) + pointer.sx * 0.45 + Math.sin(T * 0.5) * 0.18;
+    h.spin.rotation.x = -pointer.sy * 0.3 + Math.sin(T * 0.4) * 0.05;
+    h.a.update(T, dt);
+  }
+  updateConfetti(dt);
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>
