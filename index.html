@@ -111,6 +111,7 @@ button, select, textarea, input { font: inherit; color: inherit; }
   border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text); font-weight: 600;
   background-image: linear-gradient(45deg, transparent 50%, var(--cp-text-muted) 50%), linear-gradient(135deg, var(--cp-text-muted) 50%, transparent 50%);
   background-position: calc(100% - 17px) 52%, calc(100% - 12px) 52%; background-size: 5px 5px; background-repeat: no-repeat;
+  max-width: 260px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
 }
 .toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--cp-text-muted); cursor: pointer; user-select: none; }
 .toggle input { accent-color: var(--ms-brand-blue); width: 16px; height: 16px; }
@@ -298,6 +299,7 @@ textarea:focus { outline: none; border-color: var(--ms-brand-blue); box-shadow: 
   .shead .anchor { display: none; }
   .wordmark, .vdiv { display: none; }
   .slide { padding: 16px; }
+  .select { max-width: 170px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -321,11 +323,24 @@ textarea:focus { outline: none; border-color: var(--ms-brand-blue); box-shadow: 
   <div class="spacer"></div>
   <label class="field" for="industry"><span>Industry</span>
     <select id="industry" class="select">
-      <option value="retail">Retail</option>
-      <option value="insurance">Insurance</option>
+      <option value="auto">Automotive &amp; Mobility</option>
+      <option value="centralgov">Central Government (UK)</option>
       <option value="cpg">Consumer Goods</option>
+      <option value="defence">Defense</option>
+      <option value="education">Education</option>
+      <option value="energy">Energy and Resources</option>
+      <option value="finserv">Financial Services</option>
+      <option value="health">Health</option>
+      <option value="insurance">Insurance</option>
+      <option value="localgov">Local Government - LRG (UK)</option>
+      <option value="manufacturing">Manufacturing</option>
       <option value="media">Media</option>
+      <option value="nonprofit">Non-Profit</option>
+      <option value="profserv">Professional Services</option>
+      <option value="publicsafety">Public Safety &amp; National Security</option>
+      <option value="retail" selected>Retail</option>
       <option value="telco">Telecommunications</option>
+      <option value="travel">Travel, Transport &amp; Hospitality</option>
     </select>
   </label>
   <label class="toggle"><input type="checkbox" id="hl" checked><span><span class="long">Highlight </span>GCSE</span></label>
@@ -501,6 +516,401 @@ INDUSTRIES.telco = {
   ]
 };
 
+INDUSTRIES.auto = {
+  name: 'Automotive & Mobility', icon: 'car',
+  guard: 'Check safety, emissions and range claims against type-approval data and ASA guidance, and handle recall and connected-car data in line with UK GDPR.',
+  scenarios: [
+    { tag: 'Dealer network', title: 'EV sales performance', task: 'Electric vehicle sales are lagging behind target across the dealer network.',
+      poor: { t: 'How are EV sales?', why: 'No model, region, period or measure. Copilot cannot tell what “good” looks like or why you are asking.' },
+      average: { t: 'Analyse our electric car sales by dealer this quarter and tell me which dealers are struggling.', why: 'A clear task and scope, but no target, no data source and no definition of “struggling”.' },
+      great: { g: 'Analyse Q3 sales of the Volta e-SUV across our 64 UK dealers so I can decide where to focus our dealer incentive budget in Q4.',
+        c: 'I’m the UK Network Development Manager; we are 18% behind our ZEV mandate target and the sales director wants a plan by 20 November.',
+        s: 'Use the Q3 dealer sales dashboard, the test-drive booking export in /Sales/EV and the regional managers’ visit notes.',
+        e: 'A table ranking dealers by sales against target and test-drive conversion, the bottom ten flagged with one-line reasons, then three bullet-point actions; under 300 words.',
+        why: 'A named model, a regulatory target, real data and a decision to make, so the analysis is ready to act on.' } },
+    { tag: 'After-sales', title: 'Recall customer letter', task: 'A software recall needs customers to book a free update.',
+      poor: { t: 'Write a recall letter.', why: 'Which vehicle, which fault, what action? Without facts it may give wrong or alarming safety information.' },
+      average: { t: 'Write a letter to customers telling them about the recall on their car and asking them to book a fix.', why: 'Has an audience and an action, but no model, fault, remedy or tone, so it will be vague.' },
+      great: { g: 'Draft a recall letter asking owners of 2023 Volta e-SUVs to book a free software update at their dealer.',
+        c: 'About 12,400 UK vehicles are affected by a fault that can cause the rear camera display to freeze; the DVSA has approved the remedy and many owners are not tech-savvy.',
+        s: 'Base it on recall notice RC-2024-17, the technical service bulletin and our approved recall letter template.',
+        e: 'One page in plain English with a reading age of 12; headings “What is the issue”, “What you need to do” and “How long it takes”; calm, reassuring tone; do not speculate about causes not in the bulletin.',
+        why: 'Accurate, regulator-approved facts in a clear format that reassures owners and drives bookings.' } },
+    { tag: 'Mobility services', title: 'Car-club expansion case', task: 'Decide whether to launch the car-club service in a new city.',
+      poor: { t: 'Should we expand?', why: 'Expand what, where and on what evidence? Copilot can only offer generic pros and cons.' },
+      average: { t: 'Write a business case for launching our car-sharing service in Bristol with the main pros and cons.', why: 'Has a goal and a location, but no data, investment limit, decision-maker or structure.' },
+      great: { g: 'Write a business case recommending whether to launch our ShareDrive car club in Bristol in spring, so the investment committee can decide on 4 December.',
+        c: 'We have 150,000 members in three cities; Bristol City Council offers 40 dedicated bays and our budget cap is £2.1m for the first two years.',
+        s: 'Use the Bristol market study, the member utilisation data from our Leeds launch and the council’s parking bay proposal email.',
+        e: 'An executive summary with a clear recommendation, a table of costs, revenue and break-even month, and the top five risks as bullets; no more than two pages; state your assumptions.',
+        why: 'Gives a decision deadline, constraints and evidence, so the business case is board-ready.' } }
+  ]
+};
+INDUSTRIES.centralgov = {
+  name: 'Central Government (UK)', icon: 'portico',
+  guard: 'Never paste OFFICIAL-SENSITIVE or personal data into prompts unless your tool is approved for it. Follow the Civil Service Code and Cabinet Office guidance on generative AI, and check drafts for political impartiality.',
+  scenarios: [
+    { tag: 'Policy', title: 'Ministerial submission', task: 'A minister needs to decide on options for a new skills grant.',
+      poor: { t: 'Write a submission.', why: 'About what, for whom and with which options? Copilot cannot produce a usable decision paper.' },
+      average: { t: 'Write a ministerial submission on the options for the new green skills grant scheme.', why: 'Has a topic and an audience, but no recommendation, evidence, deadline or departmental format.' },
+      great: { g: 'Draft a ministerial submission setting out three delivery options for the £40m Green Skills Grant so the Minister can choose a preferred option.',
+        c: 'I’m a policy adviser; the Minister must announce the scheme at the 12 December summit, HM Treasury has capped admin costs at 5% and stakeholders favour delivery through colleges.',
+        s: 'Use the policy options paper, the stakeholder consultation summary and the Treasury spending letter in /Policy/GreenSkills.',
+        e: 'Use our standard submission format: issue, recommendation, timing, three options in a table with costs, risks and equality impacts, then annexes; maximum two pages; neutral, impartial tone.',
+        why: 'Follows the department’s format and gives the Minister a clear, evidence-based choice.' } },
+    { tag: 'Correspondence', title: 'Reply to an MP', task: 'An MP has written on behalf of a constituent about a delayed payment.',
+      poor: { t: 'Reply to this MP.', why: 'No case facts, policy position or tone. It risks an inaccurate or politically sensitive reply.' },
+      average: { t: 'Write a reply to the MP explaining why their constituent’s grant payment has been delayed.', why: 'Has a purpose and an audience, but no case facts, remedy or departmental style.' },
+      great: { g: 'Draft a reply from the Minister to Sarah Collins MP explaining the delay to her constituent’s Business Resilience Grant and when it will be paid.',
+        c: 'The payment was held for a routine fraud check that has now cleared; payment will be made by 29 November, and ministerial correspondence must be answered within 20 working days.',
+        s: 'Use the case notes on CRM ref MC-55102, the grant scheme guidance and our ministerial correspondence style guide.',
+        e: 'One page in plain English with a courteous, empathetic tone; confirm the payment date clearly; no internal jargon or names of officials; do not include the constituent’s personal data beyond what the MP supplied.',
+        why: 'Accurate, timely and in house style, while protecting personal data.' } },
+    { tag: 'Delivery', title: 'Programme board update', task: 'A digital programme’s board needs a monthly status report.',
+      poor: { t: 'Give me a programme update.', why: 'Which programme and which audience, at what level of detail? The answer will be generic.' },
+      average: { t: 'Summarise the progress of the digital passport renewal programme for the programme board this month.', why: 'Has a programme and an audience, but no sources, RAG criteria or format.' },
+      great: { g: 'Summarise October progress on the Digital Renewals Programme for the programme board so members can agree whether to move to private beta.',
+        c: 'The board meets on Monday; the GDS service assessment is on 3 December and two risks were escalated last month.',
+        s: 'Use the RAID log, the October milestone tracker and the minutes of last month’s board meeting.',
+        e: 'A one-page highlight report with an overall RAG status, a table of milestones (planned against actual), the top five risks with owners, and decisions needed as bullets; concise civil-service tone.',
+        why: 'Grounded in the programme’s own controls and focused on the decision the board needs to take.' } }
+  ]
+};
+INDUSTRIES.defence = {
+  name: 'Defense', icon: 'radar',
+  guard: 'Never enter classified, OFFICIAL-SENSITIVE or operational details into a tool not accredited for that classification. Follow MOD and JSP guidance and keep a human accountable for every output.',
+  scenarios: [
+    { tag: 'Procurement', title: 'Supplier bid evaluation', task: 'Compare supplier bids for a training simulator contract.',
+      poor: { t: 'Which bid is best?', why: 'Which bids, against what criteria? An unsupported choice could breach procurement rules.' },
+      average: { t: 'Compare the three supplier bids for the simulator contract and tell me which one is best.', why: 'A clear task, but no evaluation criteria, weightings or source documents, so the comparison is unreliable.' },
+      great: { g: 'Compare the three tenders for the driver training simulator contract against our published evaluation criteria to support the moderation panel.',
+        c: 'I’m the commercial lead; the contract is worth £14m over five years under the Procurement Act 2023, and scoring is 60% quality and 40% price.',
+        s: 'Use the invitation to tender, the evaluation criteria matrix and the three bid responses in the /Commercial/SIM-07 folder.',
+        e: 'A table scoring each bid against every criterion with evidence references, a list of clarification questions and a neutral summary; do not recommend a winner, because the panel decides.',
+        why: 'Keeps the evaluation fair, auditable and within procurement rules, with humans making the decision.' } },
+    { tag: 'Equipment support', title: 'Maintenance trend analysis', task: 'Find out why vehicle availability has dropped across a fleet.',
+      poor: { t: 'Why are vehicles broken?', why: 'No fleet, period or data. Copilot can only speculate.' },
+      average: { t: 'Analyse why availability of our logistics vehicle fleet has dropped this year and suggest some fixes.', why: 'Has a goal and a scope, but no data source, target or output format.' },
+      great: { g: 'Identify the main causes of falling availability in our logistics vehicle fleet and recommend actions to restore it to the 85% target.',
+        c: 'Availability has fallen from 86% to 71% since April; the support contractor changed in March, and the fleet supports training exercises next spring.',
+        s: 'Use the maintenance management system export for April to October, the spares backlog report and the contractor’s monthly performance reports.',
+        e: 'A ranked table of failure causes with downtime hours, a Pareto chart description, and five recommendations with owners; under 400 words; flag any data gaps.',
+        why: 'A measurable target, unclassified engineering data and actionable recommendations.' } },
+    { tag: 'Training', title: 'Training course outline', task: 'New recruits need a cyber-hygiene awareness course.',
+      poor: { t: 'Create a training course.', why: 'On what topic, for whom and how long? The output will be generic.' },
+      average: { t: 'Create a cyber security awareness course for new defence civilian staff covering the basics.', why: 'Has a topic and an audience, but no learning outcomes, duration or source policy.' },
+      great: { g: 'Design a 90-minute cyber-hygiene induction module for new civilian staff so they can recognise and report phishing and handle information correctly.',
+        c: 'Learners are non-technical new joiners; completion is mandatory within their first month and last year’s course scored only 2.9 out of 5 for engagement.',
+        s: 'Base it on our information security policy, the JSP 440 summary for staff and last year’s course feedback survey.',
+        e: 'An outline with four learning outcomes, a session plan table (timings, activities, materials), two scenario-based exercises and a five-question quiz; engaging, plain-English tone.',
+        why: 'Clear outcomes, the right audience and grounded in policy, so it is ready to build.' } }
+  ]
+};
+
+INDUSTRIES.education = {
+  name: 'Education', icon: 'mortarboard',
+  guard: 'Never paste pupil or student personal data, SEND details or safeguarding information into prompts. Follow DfE guidance on generative AI and your school or university data protection policy.',
+  scenarios: [
+    { tag: 'Teaching', title: 'Lesson plan', task: 'Plan an engaging lesson for a mixed-ability class.',
+      poor: { t: 'Make a lesson plan.', why: 'Which subject, age group and objective? Copilot will produce a generic template.' },
+      average: { t: 'Create a lesson plan for Year 9 science on photosynthesis with some activities.', why: 'Has a subject and a year group, but no duration, learning objectives, curriculum link or differentiation.' },
+      great: { g: 'Create a 60-minute Year 9 lesson plan on photosynthesis so pupils can explain the word equation and the factors that affect the rate.',
+        c: 'I’m a science teacher with a mixed-ability class of 28 pupils, including four with EAL needs; the lab is available for one practical.',
+        s: 'Align it to the KS3 national curriculum, our department scheme of work for Unit 9B and the attached required practical sheet.',
+        e: 'A table with timings, teacher activity, pupil activity and resources; one starter, one practical, a plenary and three differentiated exit questions (support, core, stretch).',
+        why: 'Curriculum-aligned, differentiated and timed, so it is ready to teach.' } },
+    { tag: 'Leadership', title: 'Attendance report to governors', task: 'Governors need an update on persistent absence.',
+      poor: { t: 'Summarise attendance.', why: 'For whom, which period and which measures? The output will lack focus.' },
+      average: { t: 'Write a report for governors on pupil attendance this term and what we are doing about it.', why: 'Has an audience and a topic, but no data source, targets or format.' },
+      great: { g: 'Write an attendance report for the autumn governors’ meeting so governors can challenge and support our plan to reduce persistent absence.',
+        c: 'Persistent absence is 19% against a national average of 17%, Ofsted inspects within the next year and governors asked for analysis by year group and disadvantage.',
+        s: 'Use the anonymised attendance dashboard export, our attendance policy and the DfE “Working together to improve school attendance” guidance.',
+        e: 'Two pages: a headline summary, a table by year group and pupil-premium status, three actions with owners and dates, and two suggested questions for governors; use no pupil names.',
+        why: 'Anonymised, benchmarked and structured for governor scrutiny.' } },
+    { tag: 'Higher education', title: 'Student support email', task: 'Students need to know about extended library and wellbeing support during exams.',
+      poor: { t: 'Email the students.', why: 'About what, from whom and in what tone? It will miss key details.' },
+      average: { t: 'Write an email to students about the extra library hours and wellbeing support during exams.', why: 'Has a topic and an audience, but no dates, services or tone.' },
+      great: { g: 'Write an email to all undergraduate students promoting extended library opening and wellbeing drop-ins during the January exam period.',
+        c: 'Last year many students didn’t know these services existed, and our student survey showed exam stress was the top concern for first-year students.',
+        s: 'Use the library opening schedule, the wellbeing service timetable and the student union exam campaign brief.',
+        e: 'Under 180 words, a friendly and supportive tone, a subject line under 50 characters, three bullet points with times and locations, and one clear call to action; accessible plain English.',
+        why: 'Targeted, specific and supportive, so students can act on it.' } }
+  ]
+};
+INDUSTRIES.energy = {
+  name: 'Energy and Resources', icon: 'turbine',
+  guard: 'Keep safety-critical and operational technology data out of unapproved tools. Check all customer communications against Ofgem rules and all environmental claims against evidence.',
+  scenarios: [
+    { tag: 'Customer', title: 'Price change notice', task: 'Customers need to be told about a tariff change.',
+      poor: { t: 'Write about price changes.', why: 'Which tariff, which customers and when? Inaccurate notices can breach Ofgem rules.' },
+      average: { t: 'Write a letter telling customers that their energy tariff is changing next month.', why: 'Has an audience and a topic, but no figures, dates, regulatory requirements or support options.' },
+      great: { g: 'Draft a notice telling standard variable tariff customers about the price change from 1 January and how to get help if they are struggling.',
+        c: 'About 310,000 households are affected, Ofgem requires at least 30 days’ notice, and many customers are in vulnerable circumstances or on prepayment meters.',
+        s: 'Use the approved tariff rates sheet, Ofgem’s Standards of Conduct and our vulnerable customer support policy.',
+        e: 'One page in plain English with a table of old and new unit rates and standing charges, a clear “What you can do” section, and support contact details; empathetic tone; do not give financial advice.',
+        why: 'Accurate, compliant and empathetic, with the support customers need.' } },
+    { tag: 'Operations', title: 'Wind farm downtime analysis', task: 'Turbine downtime is higher than expected at an offshore wind farm.',
+      poor: { t: 'Why are turbines down?', why: 'Which site, period and data? Copilot can only guess.' },
+      average: { t: 'Look at why our offshore wind turbines have had more downtime this year and suggest improvements.', why: 'Has a goal, but no data source, target or output structure.' },
+      great: { g: 'Identify the main causes of unplanned downtime at our North Sea wind farm and recommend actions to raise availability to 97%.',
+        c: 'Availability fell to 93% this year, costing an estimated £4.2m in lost generation, and the maintenance contract is up for renewal in March.',
+        s: 'Use the SCADA alarm logs for January to October, the work order records and the vessel weather-downtime report.',
+        e: 'A ranked table of fault categories with hours lost and cost, the top three root causes, and five recommendations with expected impact; under 400 words; note any data quality issues.',
+        why: 'Quantified, grounded in operational data and tied to a commercial decision.' } },
+    { tag: 'Sustainability', title: 'Net zero progress update', task: 'The board needs an update on decarbonisation targets.',
+      poor: { t: 'Net zero update please.', why: 'For whom, against which targets and which data? It invites vague claims.' },
+      average: { t: 'Write a summary of our progress towards net zero for the board this year.', why: 'Has an audience, but no targets, data or format, so it risks unsupported claims.' },
+      great: { g: 'Summarise our progress against the 2030 Scope 1 and 2 reduction targets so the board can approve next year’s decarbonisation investment.',
+        c: 'We have cut emissions 31% against the 2019 baseline but are behind on fleet electrification, and investors expect TCFD-aligned disclosure.',
+        s: 'Use the verified emissions inventory, the decarbonisation programme tracker and the draft TCFD report.',
+        e: 'A one-page board paper: a headline RAG status, a table of target against actual by scope, three risks and a clear funding request; factual tone with every figure sourced; no greenwashing.',
+        why: 'Evidence-based and decision-focused, which avoids greenwashing risk.' } }
+  ]
+};
+INDUSTRIES.finserv = {
+  name: 'Financial Services', icon: 'coins',
+  guard: 'Never paste customer account data or inside information into prompts. Check outputs against FCA Consumer Duty and financial promotion rules, and keep a human sign-off on any advice.',
+  scenarios: [
+    { tag: 'Retail banking', title: 'Mortgage customer letter', task: 'Customers coming off fixed-rate deals need clear options.',
+      poor: { t: 'Write a mortgage letter.', why: 'For whom and about what? It risks a non-compliant or confusing message.' },
+      average: { t: 'Write a letter to customers whose fixed rate mortgage is ending, explaining their options.', why: 'Has an audience and a purpose, but no products, rates, timings or regulatory requirements.' },
+      great: { g: 'Draft a letter to customers whose two-year fixed-rate mortgage ends in the next 90 days, explaining their options so they can avoid moving to our standard variable rate.',
+        c: 'About 8,600 customers are affected, many face payment increases above £200 a month, and the FCA Consumer Duty requires us to deliver good outcomes and clear communication.',
+        s: 'Use the current product switch rate sheet, our Consumer Duty communication standards and the approved mortgage letter template.',
+        e: 'One page in plain English: a personalised payment-change placeholder, a table of the three options, how to get support if worried about payments, and no advice language; reading age 12.',
+        why: 'Compliant with Consumer Duty, clear and supportive of good outcomes.' } },
+    { tag: 'Risk & compliance', title: 'Complaints trend analysis', task: 'Complaint volumes about card payments have risen.',
+      poor: { t: 'Look at the complaints.', why: 'Which product, period and purpose? The analysis will lack focus.' },
+      average: { t: 'Analyse the card payment complaints from last quarter and tell me the main themes.', why: 'Has scope and a task, but no source, root-cause expectation or format.' },
+      great: { g: 'Analyse Q3 card payment complaints to identify root causes and recommend fixes ahead of the risk committee meeting on 14 November.',
+        c: 'Volumes rose 37% against Q2, the Financial Ombudsman uphold rate on our cases is 42% and the FCA expects firms to act on root causes.',
+        s: 'Use the anonymised complaints log export, the FOS decisions summary and the card operations incident register.',
+        e: 'A table of the top five themes with volumes and uphold rates, root cause for each, three recommended fixes with owners, and Consumer Duty outcome implications; under 350 words.',
+        why: 'Regulator-aware, root-cause-focused and ready for committee.' } },
+    { tag: 'Wealth', title: 'Client market update', task: 'Wealth clients want a quarterly market commentary.',
+      poor: { t: 'Write a market update.', why: 'Which period, which clients, and what can be said compliantly? It is too open.' },
+      average: { t: 'Write a quarterly market commentary for our wealth management clients covering the main events.', why: 'Has an audience and a topic, but no sources, house view, length or compliance boundaries.' },
+      great: { g: 'Write the Q3 market commentary for our wealth management clients summarising market performance and our house view.',
+        c: 'Clients are mainly retired, cautious investors and many have asked about falling interest rates; financial promotion rules require it to be fair, clear and not misleading.',
+        s: 'Use the investment committee minutes, the Q3 market data pack and our approved risk warnings.',
+        e: 'Around 500 words with headings for markets, rates and outlook; a balanced tone with no personal recommendations or performance predictions; include the standard risk warning at the end.',
+        why: 'On-message, compliant and pitched at the right client audience.' } }
+  ]
+};
+
+INDUSTRIES.health = {
+  name: 'Health', icon: 'health',
+  guard: 'Never enter patient-identifiable information into a tool not approved by your organisation. Follow NHS information governance, Caldicott principles and clinical safety standards, and ensure a clinician reviews any clinical content.',
+  scenarios: [
+    { tag: 'Patient communication', title: 'Appointment reminder text', task: 'Reduce missed outpatient appointments.',
+      poor: { t: 'Write a reminder text.', why: 'For which service, which patients and what action? It may be ineffective or confusing.' },
+      average: { t: 'Write a text message reminding patients about their outpatient appointment and asking them to cancel if they can’t come.', why: 'Has a purpose and an audience, but no character limit, details or accessibility needs.' },
+      great: { g: 'Write an SMS reminder for outpatient physiotherapy appointments that reduces missed appointments by making it easy to confirm or rebook.',
+        c: 'Our did-not-attend rate is 11%, costing the trust about £160 per missed slot, and many patients are elderly or speak English as a second language.',
+        s: 'Follow the NHS content style guide, our trust’s patient communications policy and the booking system’s placeholder fields.',
+        e: 'Under 160 characters, with placeholders for date, time and clinic, a reply-to-confirm option and a rebooking number; plain English at reading age 9; no clinical details.',
+        why: 'Concise, accessible and privacy-safe, with a clear call to action.' } },
+    { tag: 'Operations', title: 'A&E waiting time analysis', task: 'Understand why emergency department waits have risen.',
+      poor: { t: 'Why are waits long?', why: 'Which department, period and measure? Copilot can only speculate.' },
+      average: { t: 'Analyse why waiting times in our emergency department have increased over the last three months.', why: 'Has a goal and a scope, but no data source, target or output format.' },
+      great: { g: 'Identify the main drivers of longer emergency department waits since August and recommend actions to meet the four-hour standard for 78% of patients.',
+        c: 'Performance has dropped to 69%, ambulance handover delays are rising, and the board must submit an improvement plan to NHS England by 30 November.',
+        s: 'Use the anonymised ED attendance data, the bed occupancy reports and the discharge delay logs for August to October.',
+        e: 'A table of drivers ranked by impact on waits, a short commentary on flow bottlenecks by hour of day, and five actions with owners and expected gains; under 400 words.',
+        why: 'Anonymised data, a clear national standard and an improvement plan focus.' } },
+    { tag: 'Workforce', title: 'Nurse recruitment advert', task: 'A ward needs to recruit experienced nurses.',
+      poor: { t: 'Write a job advert.', why: 'Which role, band and ward? It will be generic and unappealing.' },
+      average: { t: 'Write a job advert for a Band 6 nurse on our cardiology ward highlighting the benefits.', why: 'Has the role and some focus, but no unique selling points, requirements or format.' },
+      great: { g: 'Write a job advert for two Band 6 Senior Staff Nurses on our cardiology ward that attracts experienced nurses from across the region.',
+        c: 'We have a 14% vacancy rate, staff value our flexible rostering and new cath lab, and candidates compare us with two nearby trusts.',
+        s: 'Use the job description, the person specification and the trust’s recruitment brand guidelines.',
+        e: 'Around 350 words with an engaging opening, sections for “The role”, “About you” and “Why join us”, inclusive language, and the closing date; no jargon or acronyms without explanation.',
+        why: 'Distinctive, inclusive and grounded in the real role.' } }
+  ]
+};
+INDUSTRIES.localgov = {
+  name: 'Local Government - LRG (UK)', icon: 'townhall',
+  guard: 'Never paste resident personal data or exempt committee information into unapproved tools. Follow your council’s AI policy, UK GDPR and FOI obligations, and keep decisions with officers and members.',
+  scenarios: [
+    { tag: 'Committee', title: 'Cabinet report', task: 'Cabinet must decide on changes to bin collections.',
+      poor: { t: 'Write a cabinet report.', why: 'On what decision, with which options? It will lack structure and evidence.' },
+      average: { t: 'Write a cabinet report on moving to three-weekly bin collections with the pros and cons.', why: 'Has a topic, but no data, financial implications, consultation results or council format.' },
+      great: { g: 'Draft a cabinet report recommending whether to move to three-weekly residual waste collections from April, so members can make a decision on 15 January.',
+        c: 'The change would save £1.3m a year and raise recycling rates, but residents raised concerns about overflowing bins; councillors want clear equality impacts.',
+        s: 'Use the waste service options appraisal, the public consultation results, the equality impact assessment and the medium-term financial plan.',
+        e: 'Use our committee report template: purpose, recommendations, background, options, financial, legal and equality implications, and risks; plain English; maximum six pages.',
+        why: 'Follows the council template and gives members a balanced, evidence-based choice.' } },
+    { tag: 'Resident services', title: 'Council tax reminder', task: 'Residents in arrears need a supportive reminder.',
+      poor: { t: 'Write a council tax letter.', why: 'Reminder, bill or enforcement? Without context it may be harsh or wrong.' },
+      average: { t: 'Write a letter to residents who are behind on council tax asking them to pay or get in touch.', why: 'Has an audience and an action, but no tone, support options or legal requirements.' },
+      great: { g: 'Draft a first reminder letter to residents who have missed a council tax instalment, encouraging them to pay or contact us for help before enforcement action begins.',
+        c: 'About 4,200 households are affected, many are struggling with the cost of living, and our policy is to offer support first under the council’s fair debt collection approach.',
+        s: 'Use the statutory reminder wording, our council tax support scheme guidance and the corporate debt policy.',
+        e: 'One page in plain English with a supportive, non-threatening tone; include the statutory wording, a “Can’t pay?” section with support options and contact details; reading age 11.',
+        why: 'Statutorily correct and supportive, which improves collection and wellbeing.' } },
+    { tag: 'Planning', title: 'Consultation summary', task: 'Summarise responses to a local plan consultation.',
+      poor: { t: 'Summarise the responses.', why: 'Which consultation, which audience and what level of detail? It will be shallow.' },
+      average: { t: 'Summarise the responses to our local plan consultation and list the main issues people raised.', why: 'A clear task, but no data source, audience or structure.' },
+      great: { g: 'Summarise the 2,870 responses to the Regulation 18 local plan consultation so the planning policy team can prepare the statement of consultation.',
+        c: 'Most responses concern three housing sites and transport capacity, councillors want themes by ward, and the Planning Inspectorate will examine how we responded.',
+        s: 'Use the anonymised consultation response export, the draft local plan policies and the site allocation maps.',
+        e: 'A table of themes by policy and site with response counts, representative anonymised quotes, and a column for the council’s proposed response; neutral tone; flag statutory consultee responses separately.',
+        why: 'Structured for statutory scrutiny and neutral in tone.' } }
+  ]
+};
+INDUSTRIES.manufacturing = {
+  name: 'Manufacturing', icon: 'gears',
+  guard: 'Do not paste proprietary designs, trade secrets or operational technology data into unapproved tools. Check safety-critical instructions with qualified engineers and follow HSE requirements.',
+  scenarios: [
+    { tag: 'Production', title: 'Line downtime root cause', task: 'A packaging line has had repeated stoppages.',
+      poor: { t: 'Why does the line stop?', why: 'Which line, period and data? Copilot can only guess.' },
+      average: { t: 'Analyse the stoppages on packaging line 3 this month and suggest how to reduce them.', why: 'Has a scope and a goal, but no data source, target or method.' },
+      great: { g: 'Identify the root causes of unplanned stoppages on packaging line 3 and recommend actions to raise OEE from 64% to 75%.',
+        c: 'I’m the production engineering lead; stoppages cost us 140 hours in October, a major customer order ramps up in January, and the plant manager wants a plan by Friday.',
+        s: 'Use the MES downtime log export, the maintenance work orders and the shift handover notes for October.',
+        e: 'A Pareto table of stoppage reasons with hours lost, a 5-Whys analysis for the top three, and an action plan with owners and dates; under 400 words.',
+        why: 'A measurable OEE target, real data and a structured root-cause method.' } },
+    { tag: 'Quality', title: 'Supplier non-conformance', task: 'A supplier is delivering out-of-tolerance parts.',
+      poor: { t: 'Email the supplier.', why: 'About what issue, and what do we want? It could damage the relationship.' },
+      average: { t: 'Write an email to our supplier about the faulty parts and ask them to fix the problem.', why: 'Has a purpose, but no evidence, part details, deadlines or tone.' },
+      great: { g: 'Write an email to Apex Castings requiring a corrective action plan for out-of-tolerance housings received this month.',
+        c: 'Three batches failed inspection with a 6% reject rate, causing line stoppages; they are a strategic supplier and we want to keep the relationship constructive.',
+        s: 'Use non-conformance report NCR-3318, the inspection data, the drawing tolerances and our supplier quality agreement.',
+        e: 'Under 250 words in a firm but collaborative tone; cite the evidence, request an 8D report within 10 working days and containment action within 48 hours; bullet the required actions.',
+        why: 'Evidence-based, contractual and constructive.' } },
+    { tag: 'Health & safety', title: 'Toolbox talk', task: 'Shop-floor teams need a briefing on forklift safety.',
+      poor: { t: 'Write a safety talk.', why: 'On what hazard, for whom and how long? It will be generic.' },
+      average: { t: 'Write a toolbox talk on forklift safety for warehouse staff.', why: 'Has a topic and an audience, but no incidents, duration or source procedures.' },
+      great: { g: 'Write a 10-minute toolbox talk on pedestrian and forklift safety so warehouse operatives follow the new segregation rules.',
+        c: 'We have had two near misses this quarter, new walkways were painted last week and many staff are agency workers with varied experience.',
+        s: 'Use our site traffic management plan, the near-miss reports and HSE guidance on workplace transport.',
+        e: 'Five key messages, a short real-world scenario, three questions to check understanding and a sign-off line; simple language suitable for reading aloud on the shop floor.',
+        why: 'Practical, incident-led and grounded in site procedures.' } }
+  ]
+};
+
+INDUSTRIES.nonprofit = {
+  name: 'Non-Profit', icon: 'heart',
+  guard: 'Never paste donor, beneficiary or safeguarding data into unapproved tools. Follow Charity Commission guidance, the Fundraising Code of Practice and UK GDPR consent rules.',
+  scenarios: [
+    { tag: 'Fundraising', title: 'Donor appeal email', task: 'Launch a winter appeal to regular donors.',
+      poor: { t: 'Write a fundraising email.', why: 'For which cause, which donors and what ask? It will be generic and less effective.' },
+      average: { t: 'Write an email asking our donors to support our winter homelessness appeal.', why: 'Has a cause and an audience, but no target, story, ask amount or tone.' },
+      great: { g: 'Write a winter appeal email asking our regular donors to give an extra gift to fund emergency beds for people sleeping rough.',
+        c: 'We need to raise £120,000 by 31 December; a £25 gift funds one night’s bed and support, and donors respond best to real stories with consent.',
+        s: 'Use the consented case study from our Leeds hub, last year’s appeal results and our brand tone of voice guide.',
+        e: 'Under 250 words, a warm and hopeful tone, a subject line under 50 characters, one story, three suggested gift amounts and a single donate button; comply with the Fundraising Code.',
+        why: 'An emotive but honest, consented story with a clear ask and target.' } },
+    { tag: 'Grants', title: 'Grant application', task: 'Apply to a trust for funding a youth mentoring project.',
+      poor: { t: 'Write a grant bid.', why: 'For which funder, project and amount? It will not meet the criteria.' },
+      average: { t: 'Write a grant application for our youth mentoring programme explaining why it should be funded.', why: 'Has a project, but no funder criteria, outcomes, budget or word limits.' },
+      great: { g: 'Draft the project description section of our application to the Northern Youth Trust for £85,000 over two years for our mentoring programme.',
+        c: 'The trust prioritises young people not in education or employment, our pilot supported 140 young people with 68% moving into work or training, and the deadline is 6 December.',
+        s: 'Use the funder’s guidance notes, our pilot evaluation report and the project budget spreadsheet.',
+        e: 'Maximum 750 words, structured as need, activities, outcomes and evaluation; evidence every claim with pilot data; plain, confident tone; map outcomes to the trust’s three priorities.',
+        why: 'Tailored to funder criteria and evidenced with impact data.' } },
+    { tag: 'Governance', title: 'Trustee board summary', task: 'Trustees need a quarterly impact and finance summary.',
+      poor: { t: 'Update the trustees.', why: 'On what, for which period and what decisions? It will lack focus.' },
+      average: { t: 'Write a summary for trustees on our impact and finances this quarter.', why: 'Has an audience and a topic, but no data sources, risks or decisions needed.' },
+      great: { g: 'Write a quarterly summary for the board of trustees covering impact, finances and risks, so trustees can approve the revised reserves policy.',
+        c: 'Income is 9% behind budget due to a lost contract, demand for our services is up 22% and the Charity Commission expects trustees to manage reserves prudently.',
+        s: 'Use the Q2 management accounts, the impact dashboard, the risk register and the draft reserves policy.',
+        e: 'Two pages: a headline summary, a table of KPIs against target, the top three risks with mitigations, and a clear decision request; concise, factual tone.',
+        why: 'Gives trustees the evidence and a clear decision, in line with good governance.' } }
+  ]
+};
+INDUSTRIES.profserv = {
+  name: 'Professional Services', icon: 'briefcase',
+  guard: 'Protect client confidentiality and legal privilege. Never paste client data into unapproved tools, and verify every fact, citation and figure before it reaches a client.',
+  scenarios: [
+    { tag: 'Business development', title: 'Client proposal', task: 'Respond to a request for proposal from a prospective client.',
+      poor: { t: 'Write a proposal.', why: 'For which client, service and scope? It will be a generic template.' },
+      average: { t: 'Write a proposal to Halden Foods for our supply chain consulting services.', why: 'Has a client and a service, but no client needs, pricing, differentiators or format.' },
+      great: { g: 'Draft the executive summary of our proposal to Halden Foods for a 12-week supply chain resilience review, so we are shortlisted.',
+        c: 'Halden’s CFO wants to cut inventory costs by 15% after two major stock-outs, we are competing against two Big Four firms, and our fee is fixed at £240,000.',
+        s: 'Use Halden’s RFP document, our credentials for similar food manufacturers and the notes from the discovery call with their CFO.',
+        e: 'Under 500 words: their challenge in their words, our approach in three phases, three relevant case studies, and why we are different; confident, client-centric tone; no jargon.',
+        why: 'Client-centric, differentiated and evidenced, so it is more likely to win.' } },
+    { tag: 'Delivery', title: 'Engagement status report', task: 'A client sponsor needs a weekly project update.',
+      poor: { t: 'Write a status update.', why: 'Which engagement, which period and for whom? It will be vague.' },
+      average: { t: 'Write a weekly status report for our client on the finance transformation project.', why: 'Has a project and an audience, but no data, risks or format.' },
+      great: { g: 'Write the weekly status report for the client sponsor on the finance transformation engagement so she can unblock two decisions.',
+        c: 'We are in week 6 of 16, the data migration is two weeks late because of access delays, and the client steering committee meets on Thursday.',
+        s: 'Use the project plan, the RAID log, this week’s team timesheets and the notes from Monday’s client workshop.',
+        e: 'One page: an overall RAG status, progress against milestones in a table, budget burn, the top three risks, and two decisions needed with dates; professional, concise tone.',
+        why: 'Transparent and decision-focused, which builds client trust.' } },
+    { tag: 'Knowledge', title: 'Regulatory change briefing', task: 'Brief clients on a new regulation.',
+      poor: { t: 'Explain the new rules.', why: 'Which rules, for whom and to what depth? It risks inaccuracy.' },
+      average: { t: 'Write a client briefing on the new failure-to-prevent-fraud offence and what companies should do.', why: 'Has a topic and an audience, but no sources, sector focus or length.' },
+      great: { g: 'Write a client briefing explaining the new failure-to-prevent-fraud offence so general counsels in large companies know what to do before it takes effect.',
+        c: 'Clients are mainly FTSE 250 companies, the offence applies from 1 September 2025, and many clients have asked whether their existing anti-bribery controls are enough.',
+        s: 'Use the Economic Crime and Corporate Transparency Act 2023, the Home Office guidance on reasonable procedures and our firm’s previous ABC briefing.',
+        e: 'Around 600 words with headings: what is changing, who is affected, what “reasonable procedures” means, and a five-step checklist; authoritative but accessible tone; cite sources.',
+        why: 'Grounded in primary sources and practical for the target reader.' } }
+  ]
+};
+
+INDUSTRIES.publicsafety = {
+  name: 'Public Safety & National Security', icon: 'siren',
+  guard: 'Never enter classified, operational, intelligence or victim data into a tool not accredited for it. Follow the Government Security Classifications, College of Policing APP and Home Office guidance, and keep humans accountable for decisions.',
+  scenarios: [
+    { tag: 'Community engagement', title: 'Public safety campaign', task: 'Raise awareness of a rise in doorstep scams.',
+      poor: { t: 'Write a scam warning.', why: 'Which scam, which audience and which channel? It will be generic.' },
+      average: { t: 'Write a social media post warning older residents about doorstep scams in the area.', why: 'Has an audience and a topic, but no specific tactics, advice, channel limits or source.' },
+      great: { g: 'Write a Facebook post for the police force page warning older residents about rogue traders posing as roofers and telling them what to do.',
+        c: 'Reports have risen 40% this month across the county, victims are mostly over 70, and families often share our posts with elderly relatives.',
+        s: 'Use the force’s crime trend summary (anonymised), Action Fraud advice and our approved social style guide.',
+        e: 'Under 120 words, a calm and reassuring tone, three “do and don’t” bullet points, the 101 and 999 numbers, and one hashtag; no details that could identify victims.',
+        why: 'Specific, actionable advice that protects victim privacy.' } },
+    { tag: 'Emergency planning', title: 'Exercise debrief report', task: 'Summarise lessons from a multi-agency flood exercise.',
+      poor: { t: 'Summarise the exercise.', why: 'Which exercise, for whom and what structure? Lessons will be lost.' },
+      average: { t: 'Write a debrief report on the flood exercise with the main lessons learned.', why: 'Has a task, but no sources, framework, audience or format.' },
+      great: { g: 'Write the debrief report for Exercise River Guard so the Local Resilience Forum can agree an improvement plan.',
+        c: 'Fire, police, ambulance, the council and the Environment Agency took part; communications between control rooms were a known weakness and partners meet on 9 December.',
+        s: 'Use the exercise objectives, the hot debrief notes, the observer logs and the JESIP joint doctrine principles.',
+        e: 'Structured by JESIP principle: what went well, areas for improvement and a table of recommendations with owners and deadlines; under 800 words; blame-free tone.',
+        why: 'Framework-aligned, multi-agency and focused on improvement.' } },
+    { tag: 'Workforce', title: 'Shift resourcing analysis', task: 'Understand demand pressure on response teams.',
+      poor: { t: 'Do we need more officers?', why: 'Where, when and based on what data? Copilot can only guess.' },
+      average: { t: 'Analyse our response team demand and shift patterns to see if we have enough officers at busy times.', why: 'Has a goal, but no data source, measures or output format.' },
+      great: { g: 'Compare call demand with response officer availability by hour and day to recommend shift pattern changes that improve attendance times.',
+        c: 'We are missing the 15-minute urban emergency attendance target 22% of the time, mostly on Friday and Saturday nights, and the federation must be consulted on any rota change.',
+        s: 'Use the anonymised command and control incident data for the last six months, the duty roster export and the attendance performance report.',
+        e: 'A heat-map-style table of demand against capacity, the top three gaps, and two shift pattern options with pros and cons; under 400 words; no officer names.',
+        why: 'Data-led, anonymised and aware of consultation requirements.' } }
+  ]
+};
+INDUSTRIES.travel = {
+  name: 'Travel, Transport & Hospitality', icon: 'plane',
+  guard: 'Never paste passenger, guest or payment data into unapproved tools. Check consumer messaging against CAA, ORR and CMA rules on pricing and refunds, and verify any safety information.',
+  scenarios: [
+    { tag: 'Customer service', title: 'Flight disruption message', task: 'Passengers on a cancelled flight need clear next steps.',
+      poor: { t: 'Tell passengers about cancellation.', why: 'Which flight, why, and what are their rights? It risks breaching UK261 obligations.' },
+      average: { t: 'Write a message to passengers telling them their flight has been cancelled and what they can do next.', why: 'Has an audience and a purpose, but no flight details, rights, options or channel.' },
+      great: { g: 'Write an email and SMS to passengers on cancelled flight SK214 from Manchester to Rome explaining their options and rights.',
+        c: 'About 180 passengers are affected by a technical fault, many are families travelling for half-term, and UK261 requires us to offer rerouting, refunds and care.',
+        s: 'Use the operations disruption notice, our UK261 passenger rights policy and the approved rebooking link template.',
+        e: 'Email under 200 words with headings for “What happened”, “Your options” and “Your rights”; SMS under 160 characters; apologetic, clear tone; do not speculate about compensation eligibility.',
+        why: 'Compliant, empathetic and ready for two channels.' } },
+    { tag: 'Hospitality', title: 'Guest review response', task: 'Respond to a negative hotel review.',
+      poor: { t: 'Reply to this review.', why: 'No facts, tone or intent. It may sound defensive or generic.' },
+      average: { t: 'Write a polite response to a guest who left a 2-star review about a noisy room and slow check-in.', why: 'Has the issue and a tone, but no facts, remedy, brand voice or length.' },
+      great: { g: 'Write a public reply to a 2-star TripAdvisor review about a noisy room and a 40-minute check-in wait at our Edinburgh hotel.',
+        c: 'The guest stayed during a conference week when we were short-staffed; we have since added a second check-in desk and moved the ice machine away from guest rooms.',
+        s: 'Use the guest’s review text, the duty manager’s incident notes and our brand tone of voice guidelines.',
+        e: 'Under 120 words, a warm and sincere tone, thank the guest, apologise without excuses, mention the specific improvements, and invite them to contact the general manager directly; no personal details.',
+        why: 'Specific and sincere, showing future guests that feedback leads to action.' } },
+    { tag: 'Rail operations', title: 'Punctuality performance review', task: 'Investigate declining train punctuality on a route.',
+      poor: { t: 'Why are trains late?', why: 'Which route, period and data? Copilot can only speculate.' },
+      average: { t: 'Analyse why punctuality has dropped on our Leeds to York services and suggest some fixes.', why: 'Has a route and a goal, but no data source, target or format.' },
+      great: { g: 'Identify the main causes of falling punctuality on Leeds to York services and recommend actions to restore on-time performance to 88%.',
+        c: 'On-time performance has fallen to 79% this autumn, leaf-fall season is underway, and the ORR and our franchise managers expect an improvement plan by month end.',
+        s: 'Use the delay attribution data for September to November, the fleet availability report and the timetable change notice.',
+        e: 'A ranked table of delay causes with minutes lost and responsibility (us, Network Rail or external), three root causes and five actions with owners; under 400 words.',
+        why: 'A measurable target, attributed data and clear accountability.' } }
+  ]
+};
+
 const TIPS = {
   g: 'Lead with an action verb and say what the output is for, for example “Draft… so I can decide…”.',
   c: 'Add who you are, who it is for and the situation, such as your role, the audience, a deadline or constraints.',
@@ -520,19 +930,19 @@ const RULES = {
   ],
   c: [
     [0.5, /\b(i am|i['’]m|i work|my role|as an? (?=\w)|we are|we['’]re|we have|we['’]ve|we can|we want|we must|we need|our (appetite|team|customers|audience|readers|viewers|brand|policy|strategy)|legal has)/i],
-    [0.35, /\b(customers?|policyholders?|clients?|brokers?|underwriters?|claims handlers?|investigators?|board|managers?|regulators?|ombudsman|mrs|mr|ms|dr|audience|readers?|viewers?|shoppers?|consumers?|cio|ceo|cfo|director|stakeholders?|young (people|adults)|year olds)\b/i],
-    [0.35, /\b(because|currently|following|due to|driven by|appetite|deadline|by (monday|tuesday|wednesday|thursday|friday|tomorrow|\d)|next week|today|this week|within|fca|consumer duty|disp|ofcom|asa|cma|gdpr|regulat\w*|complian\w*|upheld|disputes?|inception|year on year|rose|fell|competitors?|budget|suspects?|contacted|affected|priority register)\b/i],
+    [0.35, /\b(customers?|policyholders?|clients?|brokers?|underwriters?|claims handlers?|investigators?|board|managers?|regulators?|ombudsman|mrs|mr|ms|dr|audience|readers?|viewers?|shoppers?|consumers?|cio|ceo|cfo|director|stakeholders?|young (people|adults)|year olds|residents|citizens|patients|pupils|students|parents|ministers?|councillors|members|officers|donors|trustees|volunteers|beneficiaries|passengers|guests|travellers|drivers|dealers|suppliers|clinicians|staff|employees|partners|victims|families|governors|investors|owners|households|learners|operatives|contractor)\b/i],
+    [0.35, /\b(because|currently|following|due to|driven by|appetite|deadline|by (monday|tuesday|wednesday|thursday|friday|tomorrow|\d)|next week|today|this week|within|fca|consumer duty|disp|ofcom|asa|cma|gdpr|regulat\w*|complian\w*|upheld|disputes?|inception|year on year|rose|fell|competitors?|budget|suspects?|contacted|affected|priority register|ofsted|cqc|nhs|ofgem|mod|hmrc|ico|foi|pra|dvsa|orr|caa|uk261|treasury|risen|fallen|dropped|rising|cost(ing)?|weakness|concerns?|asked|expects?|requires?|last year|this quarter|vacancy|target)\b/i],
     [0.15, /\d/]
   ],
   s: [
-    [0.45, /\b(using|use|based on|base (\S+ ){0,2}on|from the|refer to|according to|attached|drawing on|compare\b[\s\S]{0,80}\bagainst)\b/i],
-    [0.45, /\b(the|this|these|attached|our|my|last|latest|recent|that|from)\s+(\S+\s+){0,3}(files?|documents?|reports?|emails?|thread|spreadsheets?|excel|survey|transcripts?|notes|schedule|guide|checklist|template|crm|sharepoint|onedrive|teams|meeting|data|claims history|fnol|statement|receipts|contract|wording|form|dashboard|export|deck|sheet|tracker|extract|verbatims|ratings|case study|certificate|reviews)\b/i],
+    [0.45, /\b(using|use|based on|base (\S+ ){0,2}on|from the|refer to|according to|attached|drawing on|follow|align(ed)? (\S+ ){0,2}(to|with)|compare\b[\s\S]{0,80}\bagainst)\b/i],
+    [0.45, /\b(the|this|these|attached|our|my|last|latest|recent|that|from)\s+(\S+\s+){0,3}(files?|documents?|reports?|emails?|thread|spreadsheets?|excel|survey|transcripts?|notes|schedule|guide|checklist|template|crm|sharepoint|onedrive|teams|meeting|data|claims history|fnol|statement|receipts|contract|wording|form|dashboard|export|deck|sheet|tracker|extract|verbatims|ratings|case study|certificate|reviews|description|specification|guidance|guidelines|polic(y|ies)|minutes|register|logs?|records|procedures?|notice|bulletin|act|accounts|evaluation|study|matrix|responses|assessment|appraisal|inventory|roster|orders|timetable|standards|code|maps|pack|text)\b/i],
     [0.4, /(^|\s)[\/#@][\w-]/]
   ],
   e: [
     [0.35, /\b(table|bullets?|bullet[\s-]points?|list|headings?|subheadings?|paragraphs?|summary|email|letter|slides?|chart|json|csv|markdown|one[\s-]page|headline|captions?|sms|status update|brief|executive summary|standfirst)\b/i],
     [0.35, /(\b\d+\s*[–-]?\s*\d*\s*(words?|bullets?|bullet points?|points?|sentences?|lines?|paragraphs?|pages?|characters?)\b|\b(one|two|three|four|five)[\s-]+(sentences?|lines?|paragraphs?|pages?|bullets?|bullet[\s-]points?|points?|words?)\b|\bunder \d+|\bno more than\b|\bmax(imum)?\b|\bshort\b|\bbrief\b|\bconcise\b|\bone[\s-]page\b)/i],
-    [0.3, /\b(tone|plain[\s-](english|language)|professional|friendly|polite|formal|warm|empathetic|reading age|jargon|uk english|style|playful|confident|persuasive|neutral|calm|catchy|fun)\b/i],
+    [0.3, /\b(tone|plain[\s-](english|language)|professional|friendly|polite|formal|warm|empathetic|reading age|jargon|uk english|style|playful|confident|persuasive|neutral|calm|catchy|fun|differentiated|accessible|inclusive|engaging|simple language|supportive|sincere|apologetic|reassuring|hopeful|blame-free|authoritative|factual|balanced|courteous)\b/i],
     [0.25, /\b(include|exclude|avoid|do not|don['’]t|must|should|cite|flag|highlight|ranked|prioriti[sz]e|separate|state (your )?(assumptions|uncertainty)|only use)\b/i]
   ]
 };
@@ -1264,8 +1674,468 @@ function makeTraffic() {
   };
 }
 
+
+/* ---------- v2 industry actors ---------- */
+function makeCar() {
+  const g = new THREE.Group(), car = new THREE.Group(); g.add(car);
+  const paint = M.plastic(C.brand, { metalness: 0.45, roughness: 0.18 });
+  const body = rbox(2.3, 0.46, 1.05, 0.2, paint); body.position.y = -0.2; car.add(body);
+  const cab = rbox(1.25, 0.46, 0.92, 0.2, M.plastic(0x16202b, { roughness: 0.08, metalness: 0.3 })); cab.position.set(-0.12, 0.2, 0); car.add(cab);
+  const roof = rbox(1.0, 0.07, 0.86, 0.03, paint); roof.position.set(-0.15, 0.44, 0); car.add(roof);
+  const wheels = [], tyre = M.plastic(0x15161a, { roughness: 0.6, clearcoat: 0 }), rimM = M.metal(0xd7dde3, { roughness: 0.2 });
+  [[-0.72, 0.5], [0.72, 0.5], [-0.72, -0.5], [0.72, -0.5]].forEach(([x, z]) => {
+    const w = new THREE.Group(); w.position.set(x, -0.45, z);
+    const t = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.09, 14, 32), tyre); w.add(t);
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.12, 6), rimM); r.rotation.x = PI / 2; w.add(r);
+    car.add(w); wheels.push(w);
+  });
+  const lights = [];
+  [-0.3, 0.3].forEach(z => { const l = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 12), M.glow(0xffffff, 3)); l.position.set(1.15, -0.15, z); car.add(l); const lg = glow(C.yellow, 0.9, 0.7); lg.position.set(1.25, -0.15, z); car.add(lg); lights.push(lg); });
+  [-0.32, 0.32].forEach(z => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 0.22), M.glow(C.red, 2.2)); l.position.set(-1.16, -0.12, z); car.add(l); });
+  const stripe = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.04, 1.07), M.glow(C.blue, 1.2)); stripe.position.y = -0.3; car.add(stripe);
+  const dashes = [];
+  for (let i = 0; i < 8; i++) { const d = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.02, 0.08), M.glow(i % 2 ? C.yellow : 0xffffff, 1.4)); d.position.set(0, -0.78, 0.9); g.add(d); dashes.push(d); }
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.2), new THREE.MeshStandardMaterial({ color: 0x2a2f36, roughness: 0.8, transparent: true, opacity: 0.55 })); road.rotation.x = -PI / 2; road.position.y = -0.8; road.position.z = 0.3; g.add(road);
+  const bolt = new THREE.Shape(); bolt.moveTo(0.05, 0.32); bolt.lineTo(-0.16, -0.02); bolt.lineTo(0, -0.02); bolt.lineTo(-0.06, -0.32); bolt.lineTo(0.18, 0.06); bolt.lineTo(0.02, 0.06); bolt.closePath();
+  const boltM = new THREE.Mesh(new THREE.ExtrudeGeometry(bolt, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3 }), M.glow(C.green, 2)); boltM.position.set(0, 1.05, 0); g.add(boltM);
+  const bg = glow(C.green, 1.2, 0.5); bg.position.set(0, 1.05, 0.05); g.add(bg);
+  const pins = [];
+  for (let i = 0; i < 4; i++) { const p = new THREE.Group(); const head = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), M.plastic(BRAND[i], { emissive: BRAND[i], emissiveIntensity: 0.6 })); head.position.y = 0.14; const tip = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.16, 16), M.plastic(BRAND[i])); tip.rotation.x = PI; tip.position.y = 0.03; p.add(head, tip); p.userData.ph = i / 4 * TAU; g.add(p); pins.push(p); }
+  const halo = glow(C.blue, 3.6, 0.28); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.6, h: 3.0,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.2) / 0.8); car.position.x = (1 - easeOut(k)) * -2.2;
+      car.position.y = Math.abs(Math.sin(t * 9)) * 0.02; car.rotation.z = Math.sin(t * 2) * 0.015;
+      wheels.forEach(w => { w.rotation.z = -t * 9; });
+      dashes.forEach((d, i) => { d.position.x = 1.7 - ((t * 2.2 + i * 0.45) % 3.6); });
+      lights.forEach(l => { l.material.opacity = 0.55 + 0.2 * Math.sin(t * 6); });
+      boltM.rotation.y = t * 1.5; const s = 1 + Math.max(0, Math.sin(t * 3)) * 0.15; boltM.scale.setScalar(s); bg.material.opacity = 0.35 + 0.25 * Math.sin(t * 3);
+      pins.forEach(p => { const a = t * 0.6 + p.userData.ph; p.position.set(Math.cos(a) * 1.55, 0.55 + Math.sin(a * 2) * 0.15, Math.sin(a) * 0.7); });
+    }
+  };
+}
+
+function makePortico() {
+  const g = new THREE.Group(), bld = new THREE.Group(); g.add(bld);
+  const stone = M.plastic(0xf3efe6, { roughness: 0.45, clearcoat: 0.3 }), trim = M.plastic(C.brand, { metalness: 0.3, roughness: 0.2 });
+  [[2.5, 0.12, 1.2, -1.08], [2.3, 0.12, 1.08, -0.96], [2.1, 0.12, 0.96, -0.84]].forEach(([w, h, d, y]) => { const s = rbox(w, h, d, 0.03, stone); s.position.y = y; bld.add(s); });
+  const cols = [];
+  for (let i = 0; i < 6; i++) {
+    const c = new THREE.Group(); const x = -0.85 + i * 0.34;
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.095, 1.15, 20), stone); c.add(shaft);
+    const cap = rbox(0.24, 0.07, 0.24, 0.02, stone); cap.position.y = 0.6; c.add(cap);
+    const foot = rbox(0.24, 0.06, 0.24, 0.02, stone); foot.position.y = -0.6; c.add(foot);
+    c.position.set(x, -0.15, 0.3); bld.add(c); cols.push(c);
+  }
+  const ent = rbox(2.1, 0.14, 0.9, 0.03, stone); ent.position.y = 0.52; bld.add(ent);
+  const band = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.04, 0.92), trim); band.position.y = 0.47; bld.add(band);
+  const ped = new THREE.Shape(); ped.moveTo(-1.1, 0); ped.lineTo(1.1, 0); ped.lineTo(0, 0.5); ped.closePath();
+  const pedM = new THREE.Mesh(new THREE.ExtrudeGeometry(ped, { depth: 0.7, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }), stone); pedM.position.set(0, 0.6, -0.35); bld.add(pedM);
+  const crest = new THREE.Mesh(new THREE.CircleGeometry(0.12, 32), M.glow(C.yellow, 1.6)); crest.position.set(0, 0.78, 0.4); bld.add(crest);
+  const door = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.8), M.glow(C.yellow, 0.9)); door.position.set(0, -0.32, -0.1); bld.add(door);
+  const wall = rbox(1.9, 1.1, 0.12, 0.02, M.plastic(0xd9d3c6, { roughness: 0.5 })); wall.position.set(0, -0.2, -0.2); bld.add(wall);
+  const dg = glow(C.yellow, 1.3, 0.35); dg.position.set(0, -0.32, 0.1); bld.add(dg);
+  const docs = [], docTex = texFrom(96, 128, (c, w, h) => { c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.fillStyle = '#0078D4'; c.fillRect(10, 12, w - 20, 10); c.fillStyle = '#c8ccd2'; for (let i = 0; i < 6; i++) c.fillRect(10, 34 + i * 13, (i % 3 === 2 ? 0.6 : 1) * (w - 20), 6); });
+  for (let i = 0; i < 6; i++) { const d = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.4), new THREE.MeshStandardMaterial({ map: docTex, side: THREE.DoubleSide, roughness: 0.5, emissive: BRAND[i % 4], emissiveIntensity: 0.12 })); d.userData.ph = i / 6 * TAU; g.add(d); docs.push(d); }
+  const halo = glow(C.blue, 3.6, 0.28); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.4, h: 3.1,
+    enter(t) { t0 = t; },
+    update(t) {
+      cols.forEach((c, i) => { const k = clamp01((t - t0 - 0.2 - i * 0.08) / 0.5); c.scale.y = k >= 1 ? 1 : Math.max(0.01, easeBack(k)); });
+      crest.rotation.z = t; crest.material.emissiveIntensity = 1.4 + Math.sin(t * 3) * 0.5;
+      dg.material.opacity = 0.25 + 0.15 * Math.sin(t * 2);
+      docs.forEach(d => { const a = t * 0.5 + d.userData.ph; d.position.set(Math.cos(a) * 1.6, 0.2 + Math.sin(a * 1.5) * 0.5, Math.sin(a) * 0.8); d.rotation.set(Math.sin(a) * 0.3, -a + PI / 2, Math.cos(a * 2) * 0.2); });
+      bld.position.y = Math.sin(t * 1.2) * 0.04;
+    }
+  };
+}
+
+function makeRadar() {
+  const g = new THREE.Group(), dish = new THREE.Group(); g.add(dish); dish.rotation.x = -1.05;
+  const base = new THREE.Mesh(new THREE.CircleGeometry(1.25, 64), new THREE.MeshStandardMaterial({ color: 0x0c2a1a, emissive: 0x0a3a1c, emissiveIntensity: 0.6, roughness: 0.4, transparent: true, opacity: 0.85 })); dish.add(base);
+  for (let i = 1; i <= 4; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(i * 0.3, 0.01, 6, 96), M.glow(C.green, 1.1)); r.position.z = 0.01; dish.add(r); }
+  for (let i = 0; i < 4; i++) { const l = stick(V(Math.cos(i * PI / 4) * -1.2, Math.sin(i * PI / 4) * -1.2, 0.01), V(Math.cos(i * PI / 4) * 1.2, Math.sin(i * PI / 4) * 1.2, 0.01), 0.005, M.glow(C.green, 0.6)); dish.add(l); }
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.26, 0.05, 12, 96), M.metal(0x9aa6b2, { roughness: 0.25 })); dish.add(rim);
+  const sweepTex = texFrom(256, 256, (c, w, h) => { const gr = c.createConicGradient ? c.createConicGradient(0, w / 2, h / 2) : null; if (gr) { gr.addColorStop(0, 'rgba(127,186,0,0.9)'); gr.addColorStop(0.12, 'rgba(127,186,0,0)'); gr.addColorStop(1, 'rgba(127,186,0,0)'); c.fillStyle = gr; } else c.fillStyle = 'rgba(127,186,0,0.3)'; c.beginPath(); c.arc(w / 2, h / 2, w / 2, 0, TAU); c.fill(); });
+  const sweep = new THREE.Mesh(new THREE.CircleGeometry(1.22, 64), new THREE.MeshBasicMaterial({ map: sweepTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); sweep.position.z = 0.02; dish.add(sweep);
+  const blips = [];
+  for (let i = 0; i < 7; i++) { const a = rnd(0, TAU), r = rnd(0.3, 1.1); const b = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 10), M.glow(i === 0 ? C.red : C.yellow, 3)); b.position.set(Math.cos(a) * r, Math.sin(a) * r, 0.05); b.userData.a = a; dish.add(b); const bg = glow(i === 0 ? C.red : C.yellow, 0.4, 0); bg.position.copy(b.position); dish.add(bg); blips.push({ b, bg }); }
+  const mast = new THREE.Group(); mast.position.set(0, 0.25, 0.4); g.add(mast);
+  const ant = new THREE.Mesh(new THREE.SphereGeometry(0.42, 32, 16, 0, TAU, 0, PI / 2.3), M.metal(0xe6ebf0, { roughness: 0.2, side: THREE.DoubleSide })); ant.rotation.x = PI / 2 + 0.4; ant.position.y = 0.5; mast.add(ant);
+  mast.add(stick(V(0, -0.15), V(0, 0.45), 0.04, M.metal(0x9aa6b2)));
+  const feed = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), M.glow(C.blue, 3)); feed.position.set(0, 0.62, 0.32); mast.add(feed);
+  const halo = glow(C.green, 3.6, 0.25); halo.position.z = -0.6; g.add(halo);
+  return {
+    obj: g, w: 3.2, h: 3.0,
+    update(t) {
+      const ang = t * 1.6; sweep.rotation.z = ang;
+      blips.forEach(({ b, bg }) => { let d = ((ang - b.userData.a) % TAU + TAU) % TAU; const v = Math.exp(-d * 1.2); b.scale.setScalar(0.4 + v * 1.2); bg.material.opacity = v * 0.9; bg.scale.setScalar(0.3 + v * 0.5); });
+      mast.rotation.y = Math.sin(t * 0.8) * 0.7; feed.material.emissiveIntensity = 2 + Math.sin(t * 6) * 1;
+      g.position.y = Math.sin(t * 1.2) * 0.04;
+    }
+  };
+}
+
+function makeMortarboard() {
+  const g = new THREE.Group(), cap = new THREE.Group(); g.add(cap); cap.position.y = 0.45;
+  const blk = M.plastic(0x1b1f2a, { roughness: 0.35 });
+  const board = rbox(1.7, 0.07, 1.7, 0.02, blk); board.rotation.y = PI / 4; cap.add(board);
+  const skull = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.42, 40, 1, true), M.plastic(0x1b1f2a, { side: THREE.DoubleSide, roughness: 0.4 })); skull.position.y = -0.24; cap.add(skull);
+  const btn = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 12), M.metal(0xffcc33)); btn.position.y = 0.06; cap.add(btn);
+  const tassel = new THREE.Group(); tassel.position.set(0, 0.06, 0); cap.add(tassel);
+  const cord = stick(V(0, 0), V(0.85, -0.05), 0.012, M.glow(C.yellow, 1.2)); tassel.add(cord);
+  const drop = new THREE.Group(); drop.position.set(0.85, -0.05, 0); tassel.add(drop);
+  drop.add(stick(V(0, 0), V(0, -0.45), 0.012, M.glow(C.yellow, 1.2)));
+  const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.24, 16), M.glow(C.yellow, 1.6)); tuft.position.y = -0.55; drop.add(tuft);
+  const books = new THREE.Group(); books.position.y = -0.95; g.add(books);
+  const bc = [C.red, C.blue, C.green];
+  bc.forEach((c, i) => { const b = rbox(1.25 - i * 0.12, 0.2, 0.85 - i * 0.06, 0.03, M.plastic(c, { roughness: 0.3 })); b.position.y = i * 0.21; b.rotation.y = (i - 1) * 0.12; books.add(b); const pg = new THREE.Mesh(new THREE.BoxGeometry(1.2 - i * 0.12, 0.15, 0.8 - i * 0.06), M.plastic(0xfaf8f2, { roughness: 0.6, clearcoat: 0 })); pg.position.set(0.04, i * 0.21, 0); pg.rotation.y = (i - 1) * 0.12; books.add(pg); });
+  const scrolls = [];
+  for (let i = 0; i < 4; i++) { const s = new THREE.Group(); const p = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.46, 16), M.plastic(0xfff7e6, { roughness: 0.5 })); p.rotation.z = PI / 2; s.add(p); const rb = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.018, 8, 24), M.plastic(BRAND[i])); rb.rotation.y = PI / 2; s.add(rb); s.userData.ph = i / 4 * TAU; g.add(s); scrolls.push(s); }
+  const stars = [];
+  for (let i = 0; i < 10; i++) { const st = glow(BRAND[i % 4], 0.25, 0.8); st.userData.ph = rnd(0, TAU); st.userData.r = rnd(0.9, 1.6); g.add(st); stars.push(st); }
+  const halo = glow(C.yellow, 3.4, 0.25); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.3, h: 3.2,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.3) / 0.9), toss = k < 1 ? Math.sin(k * PI) * 0.7 : 0;
+      cap.position.y = 0.45 + toss + Math.sin(t * 1.5) * 0.04; cap.rotation.y = k < 1 ? easeOut(k) * TAU : Math.sin(t * 0.7) * 0.25; cap.rotation.x = 0.25 + Math.sin(t * 1.1) * 0.05;
+      tassel.rotation.y = Math.sin(t * 1.3) * 0.5; drop.rotation.z = Math.sin(t * 2.4) * 0.25;
+      scrolls.forEach(s => { const a = t * 0.6 + s.userData.ph; s.position.set(Math.cos(a) * 1.5, -0.3 + Math.sin(a * 2) * 0.2, Math.sin(a) * 0.7); s.rotation.y = -a; });
+      stars.forEach(s => { const a = t * 0.4 + s.userData.ph; s.position.set(Math.cos(a) * s.userData.r, 0.6 + Math.sin(a * 3) * 0.6, Math.sin(a) * 0.5); s.material.opacity = 0.4 + 0.4 * Math.sin(t * 4 + s.userData.ph); });
+    }
+  };
+}
+
+function makeTurbine() {
+  const g = new THREE.Group(), wt = new THREE.Group(); g.add(wt); wt.position.set(-0.35, 0, 0);
+  const white = M.plastic(0xf6f8fa, { roughness: 0.25 });
+  const towerM = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.11, 2.1, 24), white); towerM.position.y = -0.35; wt.add(towerM);
+  const nac = rbox(0.36, 0.18, 0.18, 0.06, white); nac.position.set(0, 0.72, -0.08); wt.add(nac);
+  const rotor = new THREE.Group(); rotor.position.set(0, 0.72, 0.06); wt.add(rotor);
+  const hub = new THREE.Mesh(new THREE.SphereGeometry(0.09, 20, 14), M.plastic(C.brand)); rotor.add(hub);
+  const bs = new THREE.Shape(); bs.moveTo(-0.05, 0); bs.quadraticCurveTo(-0.09, 0.4, -0.02, 1.0); bs.lineTo(0.02, 1.0); bs.quadraticCurveTo(0.07, 0.35, 0.05, 0); bs.closePath();
+  const bGeo = new THREE.ExtrudeGeometry(bs, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
+  for (let i = 0; i < 3; i++) { const b = new THREE.Mesh(bGeo, white); b.rotation.z = i * TAU / 3; rotor.add(b); const tip = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, 0.03), M.glow(C.red, 1.5)); tip.position.y = 0.94; tip.rotation.z = 0; const holder = new THREE.Group(); holder.rotation.z = i * TAU / 3; holder.add(tip); rotor.add(holder); }
+  const panels = new THREE.Group(); panels.position.set(0.85, -1.05, 0.25); g.add(panels);
+  const pTex = texFrom(128, 96, (c, w, h) => { c.fillStyle = '#0b2a5a'; c.fillRect(0, 0, w, h); c.strokeStyle = '#6fb6ff'; c.lineWidth = 2; for (let x = 0; x <= w; x += 32) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); } for (let y = 0; y <= h; y += 24) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); } });
+  const pMat = new THREE.MeshStandardMaterial({ map: pTex, metalness: 0.6, roughness: 0.2, emissive: 0x0a3a7a, emissiveIntensity: 0.4 });
+  for (let i = 0; i < 2; i++) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.04, 0.5), pMat); p.position.set(i * 0.0, 0.25 + i * 0.0, i * -0.55); p.rotation.x = -0.6; p.position.y = 0.25; panels.add(p); const leg = stick(V(0, 0, i * -0.55), V(0, 0.22, i * -0.55), 0.02, M.metal(0x9aa6b2)); panels.add(leg); }
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(0.2, 24, 16), M.glow(C.yellow, 2.2)); sun.position.set(1.15, 0.95, -0.2); g.add(sun);
+  const sg = glow(C.yellow, 1.5, 0.6); sg.position.copy(sun.position); g.add(sg);
+  const sparks = [];
+  for (let i = 0; i < 14; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), M.glow(i % 2 ? C.green : C.blue, 2.5)); s.userData.ph = i / 14; g.add(s); sparks.push(s); }
+  const halo = glow(C.green, 3.6, 0.25); halo.position.z = -0.6; g.add(halo);
+  return {
+    obj: g, w: 3.3, h: 3.2,
+    update(t) {
+      rotor.rotation.z = -t * 2.2; wt.rotation.y = Math.sin(t * 0.4) * 0.25;
+      sun.scale.setScalar(1 + Math.sin(t * 2) * 0.06); sg.material.opacity = 0.45 + Math.sin(t * 2) * 0.15;
+      sparks.forEach((s, i) => { const k = (t * 0.35 + s.userData.ph) % 1; const fromWind = i % 2 === 0; const a = fromWind ? V(-0.35, -1.3, 0.1) : V(0.85, -0.85, 0.25); const b = V(0.15, -1.35, 0.6); s.position.lerpVectors(a, b, k); s.position.y += Math.sin(k * PI) * 0.35; s.scale.setScalar(Math.sin(k * PI)); });
+    }
+  };
+}
+
+function makeCoins() {
+  const g = new THREE.Group();
+  const gold = M.metal(0xf2c14e, { roughness: 0.18 });
+  const faceTex = texFrom(128, 128, (c, w, h) => { const gr = c.createRadialGradient(w * 0.4, h * 0.35, 4, w / 2, h / 2, w / 2); gr.addColorStop(0, '#fff3c4'); gr.addColorStop(1, '#e0a92a'); c.fillStyle = gr; c.beginPath(); c.arc(w / 2, h / 2, w / 2, 0, TAU); c.fill(); c.strokeStyle = '#b07c12'; c.lineWidth = 6; c.beginPath(); c.arc(w / 2, h / 2, w / 2 - 10, 0, TAU); c.stroke(); c.fillStyle = '#8a5c06'; c.font = 'bold 72px Segoe UI, Arial'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('£', w / 2, h / 2 + 4); });
+  const faceM = new THREE.MeshStandardMaterial({ map: faceTex, metalness: 0.7, roughness: 0.25 });
+  const coinGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.08, 40);
+  const mkCoin = () => new THREE.Mesh(coinGeo, [gold, faceM, faceM]);
+  const stacks = [];
+  [[-1.0, 3], [-0.35, 5], [0.3, 7]].forEach(([x, n]) => { const st = new THREE.Group(); st.position.set(x, -1.15, 0.1); for (let i = 0; i < n; i++) { const c = mkCoin(); c.position.y = i * 0.085; c.rotation.y = rnd(0, TAU); c.position.x = rnd(-0.02, 0.02); st.add(c); } g.add(st); stacks.push(st); });
+  const bars = [];
+  [C.red, C.yellow, C.green, C.blue].forEach((c, i) => { const b = rbox(0.18, 1, 0.18, 0.03, M.plastic(c, { emissive: c, emissiveIntensity: 0.25 })); b.position.set(0.8 + i * 0.24, -1.15, -0.35); g.add(b); bars.push(b); });
+  const arrow = new THREE.Group(); g.add(arrow);
+  const pts = [V(-1.2, -0.3, 0.3), V(-0.5, 0.0, 0.3), V(0.1, -0.15, 0.3), V(0.9, 0.55, 0.3)];
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 64, 0.04, 10, false), M.glow(C.green, 1.8)); arrow.add(tube);
+  const head = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.26, 20), M.glow(C.green, 2)); head.position.copy(pts[3]); head.lookAt(V(1.6, 1.3, 0.3)); head.rotateX(PI / 2); arrow.add(head);
+  const flip = mkCoin(); flip.scale.setScalar(1.5); g.add(flip);
+  const fg = glow(C.yellow, 1.4, 0.5); g.add(fg);
+  const halo = glow(C.yellow, 3.6, 0.25); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.4, h: 3.1,
+    enter(t) { t0 = t; },
+    update(t) {
+      bars.forEach((b, i) => { const k = clamp01((t - t0 - 0.3 - i * 0.12) / 0.6); const h = (0.35 + i * 0.28) * (k >= 1 ? 1 + Math.sin(t * 2 + i) * 0.05 : Math.max(0.02, easeBack(k))); b.scale.y = h; b.position.y = -1.15 + h / 2; });
+      tube.material.emissiveIntensity = 1.4 + Math.sin(t * 3) * 0.5;
+      flip.position.set(-0.2, 1.0 + Math.sin(t * 1.6) * 0.12, 0.2); flip.rotation.set(PI / 2 + Math.sin(t) * 0.2, 0, t * 2.4); fg.position.copy(flip.position); fg.material.opacity = 0.35 + 0.2 * Math.sin(t * 2.4);
+      stacks.forEach((s, i) => { s.position.y = -1.15 + Math.abs(Math.sin(t * 1.5 + i)) * 0.03; });
+    }
+  };
+}
+
+function makeHealth() {
+  const g = new THREE.Group();
+  const cs = new THREE.Shape(), a = 0.24, b = 0.72;
+  cs.moveTo(-a, b); cs.lineTo(a, b); cs.lineTo(a, a); cs.lineTo(b, a); cs.lineTo(b, -a); cs.lineTo(a, -a); cs.lineTo(a, -b); cs.lineTo(-a, -b); cs.lineTo(-a, -a); cs.lineTo(-b, -a); cs.lineTo(-b, a); cs.lineTo(-a, a); cs.closePath();
+  const crossGeo = new THREE.ExtrudeGeometry(cs, { depth: 0.3, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.07, bevelSegments: 6, curveSegments: 8 }); crossGeo.translate(0, 0, -0.15);
+  const cross = new THREE.Mesh(crossGeo, M.plastic(C.brand, { metalness: 0.25, roughness: 0.18 })); cross.position.y = 0.1; g.add(cross);
+  const inner = new THREE.Mesh(new THREE.ExtrudeGeometry(cs, { depth: 0.04, bevelEnabled: false }), M.plastic(0xffffff, { roughness: 0.2 })); inner.scale.set(0.72, 0.72, 1); inner.position.set(0, 0.1, 0.24); g.add(inner);
+  const ecgPts = []; const P = [[-1.5, 0], [-0.6, 0], [-0.45, 0.18], [-0.32, 0], [-0.18, 0], [-0.08, -0.25], [0.05, 0.7], [0.18, -0.4], [0.3, 0], [0.55, 0], [0.7, 0.22], [0.86, 0], [1.5, 0]];
+  P.forEach(([x, y]) => ecgPts.push(V(x, y * 0.7 - 0.95, 0.45)));
+  const ecgCurve = new THREE.CatmullRomCurve3(ecgPts, false, 'catmullrom', 0.05);
+  const ecg = new THREE.Mesh(new THREE.TubeGeometry(ecgCurve, 200, 0.022, 8, false), M.glow(C.green, 1.2)); g.add(ecg);
+  const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.06, 14, 10), M.glow(C.green, 4)); g.add(pulse);
+  const pg = glow(C.green, 0.7, 0.9); g.add(pg);
+  const helix = new THREE.Group(); helix.position.set(1.35, 0.15, -0.1); g.add(helix);
+  const dots = [];
+  for (let i = 0; i < 18; i++) for (let s = 0; s < 2; s++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 8), M.plastic(s ? C.red : C.blue, { emissive: s ? C.red : C.blue, emissiveIntensity: 0.6 })); d.userData = { i, s }; helix.add(d); dots.push(d); }
+  const pills = [];
+  for (let i = 0; i < 3; i++) { const p = new THREE.Group(); const h1 = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.12, 6, 12), M.plastic(BRAND[i])); h1.position.y = 0.06; const h2 = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.12, 6, 12), M.plastic(0xffffff)); h2.position.y = -0.06; p.add(h1, h2); p.userData.ph = i / 3 * TAU; g.add(p); pills.push(p); }
+  const halo = glow(C.blue, 3.6, 0.3); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.4, h: 3.0,
+    enter(t) { t0 = t; },
+    update(t) {
+      const beat = Math.pow(Math.max(0, Math.sin(t * 4.2)), 12); const k = clamp01((t - t0 - 0.3) / 0.6);
+      cross.scale.setScalar((k >= 1 ? 1 : easeBack(k)) * (1 + beat * 0.08)); inner.scale.set(0.72 * cross.scale.x, 0.72 * cross.scale.y, 1); cross.rotation.y = Math.sin(t * 0.8) * 0.3; inner.rotation.y = cross.rotation.y;
+      const u = (t * 0.45) % 1; pulse.position.copy(ecgCurve.getPointAt(u)); pg.position.copy(pulse.position);
+      ecg.material.emissiveIntensity = 0.9 + beat * 2;
+      dots.forEach(d => { const { i, s } = d.userData; const a = i * 0.5 + t * 1.5 + s * PI; d.position.set(Math.cos(a) * 0.2, -0.85 + i * 0.1, Math.sin(a) * 0.2); });
+      pills.forEach(p => { const a = t * 0.7 + p.userData.ph; p.position.set(-1.35 + Math.cos(a) * 0.25, 0.3 + Math.sin(a) * 0.55, Math.sin(a) * 0.3); p.rotation.set(t, t * 0.7, a); });
+    }
+  };
+}
+
+
+function makeTownhall() {
+  const g = new THREE.Group(), bld = new THREE.Group(); g.add(bld);
+  const brick = M.plastic(0xc8693f, { roughness: 0.55, clearcoat: 0.2 }), stone = M.plastic(0xf1ece2, { roughness: 0.45, clearcoat: 0.3 }), roofM = M.plastic(0x3a4a5c, { roughness: 0.35 });
+  const main = rbox(2.4, 0.95, 0.8, 0.04, brick); main.position.y = -0.75; bld.add(main);
+  const plinth = rbox(2.55, 0.1, 0.9, 0.02, stone); plinth.position.y = -1.25; bld.add(plinth);
+  const cornice = rbox(2.5, 0.08, 0.86, 0.02, stone); cornice.position.y = -0.24; bld.add(cornice);
+  const winM = M.glow(C.yellow, 0.6), wins = [];
+  for (let r = 0; r < 2; r++) for (let i = 0; i < 6; i++) { if (r === 0 && (i === 2 || i === 3)) continue; const w = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.24), winM.clone()); w.position.set(-0.95 + i * 0.38, -1.0 + r * 0.42, 0.41); bld.add(w); wins.push(w); }
+  const door = rbox(0.42, 0.5, 0.06, 0.03, M.plastic(C.brand)); door.position.set(0, -0.95, 0.41); bld.add(door);
+  const tower = rbox(0.62, 1.0, 0.62, 0.03, brick); tower.position.y = 0.25; bld.add(tower);
+  const tcap = rbox(0.72, 0.08, 0.72, 0.02, stone); tcap.position.y = 0.78; bld.add(tcap);
+  const spire = new THREE.Mesh(new THREE.ConeGeometry(0.48, 0.6, 4), roofM); spire.rotation.y = PI / 4; spire.position.y = 1.12; bld.add(spire);
+  const vane = new THREE.Group(); vane.position.y = 1.45; bld.add(vane);
+  vane.add(stick(V(0, 0), V(0, 0.22), 0.012, M.metal(0xffcc33)));
+  const arrow = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.22, 8), M.metal(0xffcc33)); arrow.rotation.z = -PI / 2; arrow.position.y = 0.18; vane.add(arrow);
+  const clock = new THREE.Group(); clock.position.set(0, 0.35, 0.32); bld.add(clock);
+  clock.add(new THREE.Mesh(new THREE.CircleGeometry(0.22, 48), M.plastic(0xfffdf6, { emissive: 0xfff1c0, emissiveIntensity: 0.35 })));
+  const bez = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.025, 10, 48), M.metal(0xffcc33)); clock.add(bez);
+  for (let i = 0; i < 12; i++) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, i % 3 ? 0.03 : 0.05, 0.01), M.plastic(0x222222)); const a = i / 12 * TAU; m.position.set(Math.sin(a) * 0.18, Math.cos(a) * 0.18, 0.01); m.rotation.z = -a; clock.add(m); }
+  const hrH = new THREE.Group(), mnH = new THREE.Group(); clock.add(hrH, mnH);
+  const hb = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.11, 0.01), M.plastic(0x111111)); hb.position.set(0, 0.05, 0.02); hrH.add(hb);
+  const mb = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.16, 0.01), M.plastic(0x111111)); mb.position.set(0, 0.075, 0.03); mnH.add(mb);
+  const bins = [];
+  [C.green, C.blue, C.red].forEach((c, i) => { const b = new THREE.Group(); const body = rbox(0.18, 0.26, 0.18, 0.03, M.plastic(c)); const lid = rbox(0.2, 0.04, 0.2, 0.015, M.plastic(c)); lid.position.y = 0.15; b.add(body, lid); b.position.set(1.4, -1.15, 0.3 - i * 0.24); g.add(b); bins.push({ b, lid }); });
+  const tree = new THREE.Group(); tree.position.set(-1.45, -1.05, 0.25); g.add(tree);
+  tree.add(stick(V(0, -0.15), V(0, 0.15), 0.035, M.plastic(0x6b4a2b)));
+  const crown = new THREE.Mesh(new THREE.IcosahedronGeometry(0.28, 1), M.plastic(C.green, { flatShading: true, roughness: 0.4 })); crown.position.y = 0.35; tree.add(crown);
+  const pins = [];
+  for (let i = 0; i < 5; i++) { const p = glow(BRAND[i % 4], 0.35, 0.9); p.userData.ph = i / 5 * TAU; g.add(p); pins.push(p); }
+  const halo = glow(C.blue, 3.6, 0.28); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.5, h: 3.2,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.2) / 0.7); bld.scale.y = k >= 1 ? 1 : Math.max(0.02, easeBack(k));
+      mnH.rotation.z = -t * 1.2; hrH.rotation.z = -t * 0.1;
+      vane.rotation.y = Math.sin(t * 0.9) * 1.2;
+      wins.forEach((w, i) => { w.material.emissiveIntensity = 0.4 + 0.5 * Math.max(0, Math.sin(t * 0.9 + i * 1.7)); });
+      bins.forEach(({ lid }, i) => { lid.rotation.x = -Math.max(0, Math.sin(t * 2 + i * 1.3)) * 0.5; });
+      crown.rotation.y = t * 0.4; crown.scale.setScalar(1 + Math.sin(t * 2) * 0.04);
+      pins.forEach(p => { const a = t * 0.5 + p.userData.ph; p.position.set(Math.cos(a) * 1.65, 0.6 + Math.sin(a * 2) * 0.3, Math.sin(a) * 0.6); });
+    }
+  };
+}
+
+function gearGeo(rOut, teeth, depth) {
+  const s = new THREE.Shape(), rIn = rOut * 0.82, n = teeth * 4;
+  for (let i = 0; i <= n; i++) { const a = i / n * TAU, r = (i % 4 === 1 || i % 4 === 2) ? rOut : rIn; const x = Math.cos(a) * r, y = Math.sin(a) * r; i ? s.lineTo(x, y) : s.moveTo(x, y); }
+  const hole = new THREE.Path(); hole.absarc(0, 0, rOut * 0.25, 0, TAU, true); s.holes.push(hole);
+  const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 6 }); geo.translate(0, 0, -depth / 2); return geo;
+}
+function makeGears() {
+  const g = new THREE.Group();
+  const defs = [{ r: 0.75, n: 14, x: -0.45, y: 0.15, c: C.brand, dir: 1 }, { r: 0.48, n: 9, x: 0.8, y: 0.38, c: C.red, dir: -1 }, { r: 0.4, n: 7, x: 0.42, y: -0.82, c: C.green, dir: -1 }, { r: 0.3, n: 6, x: -1.2, y: -0.8, c: C.yellow, dir: -1 }];
+  const gears = defs.map((d, i) => {
+    const m = new THREE.Mesh(gearGeo(d.r, d.n, 0.2), i === 0 ? M.metal(0xc9d1d9, { roughness: 0.25 }) : M.plastic(d.c, { metalness: 0.4, roughness: 0.25 }));
+    m.position.set(d.x, d.y, i * 0.02); g.add(m);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(d.r * 0.32, d.r * 0.32, 0.26, 24), M.metal(0x6a7480)); hub.rotation.x = PI / 2; hub.position.copy(m.position); g.add(hub);
+    const cap = new THREE.Mesh(new THREE.CircleGeometry(d.r * 0.14, 20), M.glow(i === 0 ? C.blue : d.c, 2)); cap.position.set(d.x, d.y, 0.15); g.add(cap);
+    return { m, d };
+  });
+  const belt = new THREE.Group(); belt.position.set(0, -1.38, 0.35); g.add(belt);
+  const beltM = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.06, 0.45), M.plastic(0x2a2f36, { roughness: 0.7, clearcoat: 0 })); belt.add(beltM);
+  const boxes = [];
+  for (let i = 0; i < 4; i++) { const b = rbox(0.24, 0.2, 0.24, 0.03, M.plastic(0xc89a5a, { roughness: 0.6, clearcoat: 0.1 })); const tape = new THREE.Mesh(new THREE.BoxGeometry(0.245, 0.025, 0.06), M.glow(BRAND[i], 1)); tape.position.y = 0.09; b.add(tape); belt.add(b); boxes.push(b); }
+  const arm = new THREE.Group(); arm.position.set(1.35, -1.3, -0.1); g.add(arm);
+  const armM = M.plastic(C.yellow, { roughness: 0.3 });
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.1, 24), M.metal(0x6a7480)); arm.add(base);
+  const seg1 = new THREE.Group(); seg1.position.y = 0.05; arm.add(seg1);
+  seg1.add(stick(V(0, 0), V(0, 0.55), 0.05, armM));
+  const seg2 = new THREE.Group(); seg2.position.y = 0.55; seg1.add(seg2);
+  seg2.add(stick(V(0, 0), V(-0.45, 0.1), 0.04, armM));
+  const grip = new THREE.Mesh(new THREE.SphereGeometry(0.06, 14, 10), M.glow(C.blue, 2.5)); grip.position.set(-0.45, 0.1, 0); seg2.add(grip);
+  const sparks = [];
+  for (let i = 0; i < 8; i++) { const s = glow(C.yellow, 0.18, 0); g.add(s); sparks.push({ s, v: V(0, 0, 0), life: 0 }); }
+  const halo = glow(C.blue, 3.6, 0.28); halo.position.z = -0.6; g.add(halo);
+  let si = 0, lastBurst = 0;
+  return {
+    obj: g, w: 3.4, h: 3.2,
+    update(t) {
+      const w = t * 0.8; gears.forEach(({ m, d }, i) => { m.rotation.z = i === 0 ? w : d.dir * w * (defs[0].n / d.n) + (i === 1 ? 0.18 : 0.1); });
+      boxes.forEach((b, i) => { b.position.set(1.5 - ((t * 0.5 + i * 0.75) % 3.0), 0.13, 0); });
+      seg1.rotation.z = Math.sin(t * 1.4) * 0.3; seg2.rotation.z = Math.sin(t * 1.4 + 1) * 0.35; arm.rotation.y = Math.sin(t * 0.7) * 0.5;
+      if (t - lastBurst > 0.12) { lastBurst = t; const sp = sparks[si++ % sparks.length]; const wp = new THREE.Vector3(); grip.getWorldPosition(wp); g.worldToLocal(wp); sp.s.position.copy(wp); sp.v.set(rnd(-0.6, 0.6), rnd(0.2, 1), rnd(-0.3, 0.3)); sp.life = 1; }
+      sparks.forEach(sp => { if (sp.life > 0) { sp.life -= 0.03; sp.s.position.addScaledVector(sp.v, 0.016); sp.v.y -= 0.04; sp.s.material.opacity = sp.life; } else sp.s.material.opacity = 0; });
+    }
+  };
+}
+
+function makeHeart() {
+  const g = new THREE.Group();
+  const hs = new THREE.Shape();
+  hs.moveTo(0, -0.95); hs.bezierCurveTo(-0.3, -0.6, -1.05, -0.25, -1.0, 0.3); hs.bezierCurveTo(-0.95, 0.85, -0.25, 0.95, 0, 0.5);
+  hs.bezierCurveTo(0.25, 0.95, 0.95, 0.85, 1.0, 0.3); hs.bezierCurveTo(1.05, -0.25, 0.3, -0.6, 0, -0.95);
+  const geo = new THREE.ExtrudeGeometry(hs, { depth: 0.35, bevelEnabled: true, bevelThickness: 0.14, bevelSize: 0.12, bevelSegments: 8, curveSegments: 32 }); geo.translate(0, 0, -0.17);
+  const heart = new THREE.Mesh(geo, M.plastic(C.red, { metalness: 0.15, roughness: 0.15, sheen: 1, sheenColor: new THREE.Color(1, 0.6, 0.6) })); heart.position.y = 0.15; g.add(heart);
+  const hg = glow(C.red, 2.8, 0.45); hg.position.set(0, 0.15, 0.1); g.add(hg);
+  const hands = new THREE.Group(); hands.position.y = -1.05; g.add(hands);
+  const skin = M.plastic(0xf1c7a0, { roughness: 0.5, clearcoat: 0.2 });
+  [-1, 1].forEach(sd => { const h = rbox(0.9, 0.18, 0.55, 0.09, skin); h.position.set(sd * 0.42, 0, 0); h.rotation.z = sd * -0.28; hands.add(h); const th = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.22, 6, 12), skin); th.position.set(sd * 0.82, 0.18, 0.12); th.rotation.z = sd * 0.6; hands.add(th); });
+  const minis = [];
+  for (let i = 0; i < 9; i++) { const m = new THREE.Mesh(geo, M.plastic(BRAND[i % 4], { emissive: BRAND[i % 4], emissiveIntensity: 0.5 })); m.scale.setScalar(0.11); m.userData = { ph: i / 9, x: rnd(-1.4, 1.4), z: rnd(-0.3, 0.4) }; g.add(m); minis.push(m); }
+  const coins = [];
+  for (let i = 0; i < 3; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.03, 28), M.metal(0xf2c14e, { roughness: 0.2 })); c.userData.ph = i / 3 * TAU; g.add(c); coins.push(c); }
+  const halo = glow(C.red, 3.6, 0.22); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.3, h: 3.2,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.3) / 0.6), beat = Math.pow(Math.max(0, Math.sin(t * 3.4)), 10) + 0.5 * Math.pow(Math.max(0, Math.sin(t * 3.4 - 0.6)), 10);
+      heart.scale.setScalar((k >= 1 ? 1 : easeBack(k)) * (1 + beat * 0.08)); heart.rotation.y = Math.sin(t * 0.8) * 0.35; hg.material.opacity = 0.3 + beat * 0.35;
+      hands.position.y = -1.05 + Math.sin(t * 1.2) * 0.03;
+      minis.forEach(m => { const u = (t * 0.18 + m.userData.ph) % 1; m.position.set(m.userData.x + Math.sin(t + m.userData.ph * 9) * 0.1, -1.0 + u * 2.6, m.userData.z); m.rotation.y = t * 2 + m.userData.ph * 6; m.scale.setScalar(Math.max(0.001, 0.11 * Math.sin(u * PI))); });
+      coins.forEach(c => { const a = t * 0.8 + c.userData.ph; c.position.set(Math.cos(a) * 1.35, 0.25 + Math.sin(a) * 0.3, Math.sin(a) * 0.6); c.rotation.set(PI / 2, 0, t * 3); });
+    }
+  };
+}
+
+function makeBriefcase() {
+  const g = new THREE.Group(), bc = new THREE.Group(); g.add(bc); bc.position.y = -0.35;
+  const leather = M.plastic(0x5a3a22, { roughness: 0.45, clearcoat: 0.5 }), brass = M.metal(0xe0b44c, { roughness: 0.2 });
+  const body = rbox(2.0, 1.25, 0.55, 0.1, leather); bc.add(body);
+  const lidG = new THREE.Group(); lidG.position.set(0, 0.62, -0.28); bc.add(lidG);
+  const lid = rbox(2.02, 0.12, 0.57, 0.05, leather); lid.position.set(0, 0.0, 0.28); lidG.add(lid);
+  const handle = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.05, 12, 32, PI), M.plastic(0x2a1a10, { roughness: 0.4 })); handle.position.set(0, 0.08, 0.28); lidG.add(handle);
+  [-0.55, 0.55].forEach(x => { const cl = rbox(0.2, 0.14, 0.06, 0.02, brass); cl.position.set(x, 0.5, 0.29); bc.add(cl); });
+  const strap = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.05, 0.57), M.plastic(0x3a2414)); strap.position.y = 0.05; bc.add(strap);
+  const docTex = texFrom(96, 128, (c, w, h) => { c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.fillStyle = '#0078D4'; c.fillRect(10, 10, w - 20, 9); c.fillStyle = '#c8ccd2'; for (let i = 0; i < 5; i++) c.fillRect(10, 30 + i * 12, w - 20 - (i % 2) * 20, 5); c.fillStyle = '#7FBA00'; c.fillRect(14, 100, 12, 18); c.fillStyle = '#FFB900'; c.fillRect(32, 92, 12, 26); c.fillStyle = '#F25022'; c.fillRect(50, 84, 12, 34); });
+  const docs = [];
+  for (let i = 0; i < 4; i++) { const d = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.66), new THREE.MeshStandardMaterial({ map: docTex, side: THREE.DoubleSide, roughness: 0.5, emissive: 0xffffff, emissiveMap: docTex, emissiveIntensity: 0.15 })); d.userData.i = i; g.add(d); docs.push(d); }
+  const pie = new THREE.Group(); pie.position.set(1.3, 0.95, 0); g.add(pie);
+  let acc = 0; [0.4, 0.25, 0.2, 0.15].forEach((f, i) => { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.1, 32, 1, false, acc * TAU, f * TAU), M.plastic(BRAND[i], { emissive: BRAND[i], emissiveIntensity: 0.3 })); s.rotation.x = PI / 2; pie.add(s); s.userData.mid = (acc + f / 2) * TAU; acc += f; });
+  const pen = new THREE.Group(); pen.position.set(-1.3, 0.85, 0.1); g.add(pen);
+  pen.add(stick(V(0, -0.3), V(0, 0.3), 0.04, M.plastic(0x1b1f2a, { metalness: 0.5 })));
+  const nib = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.12, 16), brass); nib.position.y = -0.36; nib.rotation.x = PI; pen.add(nib);
+  const halo = glow(C.yellow, 3.6, 0.22); halo.position.z = -0.6; g.add(halo);
+  let t0 = -99;
+  return {
+    obj: g, w: 3.4, h: 3.2,
+    enter(t) { t0 = t; },
+    update(t) {
+      const k = clamp01((t - t0 - 0.2) / 0.7), open = (k >= 1 ? 1 : easeOut(k)) * (0.85 + Math.sin(t * 1.2) * 0.1);
+      lidG.rotation.x = -open * 1.1; bc.rotation.y = Math.sin(t * 0.6) * 0.25;
+      docs.forEach(d => { const i = d.userData.i, k2 = clamp01((t - t0 - 0.6 - i * 0.15) / 0.6), e = k2 >= 1 ? 1 : easeBack(k2); d.position.set((i - 1.5) * 0.42, -0.2 + e * (0.85 + Math.sin(t * 1.5 + i) * 0.06), 0.05 + i * 0.02); d.rotation.set(0, Math.sin(t * 0.8 + i) * 0.2, (i - 1.5) * 0.18 * e); d.scale.setScalar(Math.max(0.01, e)); });
+      pie.rotation.set(0.5, t * 0.8, 0); pie.children.forEach((s, i) => { const o = i === 0 ? 0.06 + Math.sin(t * 3) * 0.04 : 0; s.position.set(Math.sin(s.userData.mid) * o, 0, Math.cos(s.userData.mid) * o); });
+      pen.rotation.z = 0.5 + Math.sin(t * 2) * 0.15; pen.position.y = 0.85 + Math.sin(t * 1.6) * 0.06;
+    }
+  };
+}
+
+function makeSiren() {
+  const g = new THREE.Group();
+  const baseM = M.plastic(0x1b1f2a, { roughness: 0.3, metalness: 0.4 });
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.72, 0.3, 48), baseM); base.position.y = -0.55; g.add(base);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.64, 0.03, 10, 64), M.metal(0xd7dde3)); ring.rotation.x = PI / 2; ring.position.y = -0.4; g.add(ring);
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.58, 48, 24, 0, TAU, 0, PI / 2), M.glass(0x9fd8ff, { opacity: 0.35 })); dome.position.y = -0.4; g.add(dome);
+  const core = new THREE.Group(); core.position.y = -0.2; g.add(core);
+  const blue = new THREE.Color(0.05, 0.35, 1), red = new THREE.Color(1, 0.12, 0.1);
+  const lamps = [], beams = [];
+  [blue, red].forEach((c, i) => {
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 14), M.glow(c, 3)); l.position.set(i ? -0.18 : 0.18, 0, 0); core.add(l); lamps.push(l);
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.6, 2.4, 32, 1, true), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.18, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+    cone.rotation.z = i ? PI / 2 : -PI / 2; cone.position.set(i ? -1.35 : 1.35, 0, 0); core.add(cone); beams.push(cone);
+    const lg = glow(c, 1.4, 0.8); lg.position.copy(l.position); core.add(lg);
+  });
+  const shield = new THREE.Shape(); shield.moveTo(0, 0.32); shield.lineTo(0.26, 0.22); shield.lineTo(0.24, -0.08); shield.quadraticCurveTo(0.18, -0.28, 0, -0.36); shield.quadraticCurveTo(-0.18, -0.28, -0.24, -0.08); shield.lineTo(-0.26, 0.22); shield.closePath();
+  const badge = new THREE.Mesh(new THREE.ExtrudeGeometry(shield, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3 }), M.metal(0xd9dee4, { roughness: 0.15 })); badge.position.set(0, -0.58, 0.68); badge.scale.setScalar(0.55); g.add(badge);
+  const star = new THREE.Mesh(new THREE.CircleGeometry(0.06, 5), M.glow(C.yellow, 2)); star.position.set(0, -0.58, 0.73); g.add(star);
+  const waves = [];
+  for (let i = 0; i < 3; i++) { const w = new THREE.Mesh(new THREE.TorusGeometry(1, 0.02, 8, 96), new THREE.MeshBasicMaterial({ color: i % 2 ? red : blue, transparent: true, depthWrite: false, toneMapped: false })); w.rotation.x = PI / 2; w.position.y = -0.55; w.userData.o = i / 3; g.add(w); waves.push(w); }
+  const halo = glow(blue, 3.6, 0.3); halo.position.z = -0.6; g.add(halo);
+  return {
+    obj: g, w: 3.3, h: 3.0,
+    update(t) {
+      core.rotation.y = t * 3.2;
+      const f = Math.sin(t * 7) > 0; lamps[0].material.emissiveIntensity = f ? 4 : 1.2; lamps[1].material.emissiveIntensity = f ? 1.2 : 4;
+      beams[0].material.opacity = f ? 0.24 : 0.1; beams[1].material.opacity = f ? 0.1 : 0.24;
+      halo.material.color.copy(f ? blue : red); halo.material.opacity = 0.22 + 0.08 * Math.sin(t * 14);
+      waves.forEach(w => { const u = (t * 0.45 + w.userData.o) % 1; w.scale.setScalar(0.7 + u * 1.0); w.material.opacity = (1 - u) * 0.6; });
+      g.position.y = Math.sin(t * 1.3) * 0.04; badge.rotation.y = Math.sin(t * 1.1) * 0.4; star.rotation.z = t;
+    }
+  };
+}
+
+function makePlane() {
+  const g = new THREE.Group();
+  const globe = new THREE.Group(); globe.position.y = -0.35; g.add(globe);
+  globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.85, 48, 32), M.plastic(C.brand, { roughness: 0.25, metalness: 0.2 })));
+  globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.865, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 })));
+  const landTex = texFrom(256, 128, (c, w, h) => { c.clearRect(0, 0, w, h); c.fillStyle = 'rgba(127,186,0,0.95)'; [[40, 40, 30, 22], [70, 80, 18, 26], [130, 38, 26, 18], [140, 70, 16, 24], [190, 50, 34, 20], [215, 95, 16, 10]].forEach(([x, y, rx, ry]) => { c.beginPath(); c.ellipse(x, y, rx, ry, 0.3, 0, TAU); c.fill(); }); });
+  globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.87, 48, 32), new THREE.MeshStandardMaterial({ map: landTex, transparent: true, roughness: 0.5, depthWrite: false })));
+  const pins = [];
+  [[0.3, 0.6], [1.6, 0.2], [3.0, -0.3], [4.4, 0.5], [5.4, -0.1]].forEach(([lon, lat], i) => { const p = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 8), M.glow(BRAND[i % 4], 3)); p.position.setFromSphericalCoords(0.9, PI / 2 - lat, lon); globe.add(p); pins.push(p); });
+  const orbit = new THREE.Group(); orbit.position.y = -0.35; orbit.rotation.set(0.35, 0, 0.25); g.add(orbit);
+  const path = new THREE.Mesh(new THREE.TorusGeometry(1.35, 0.008, 6, 160), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, toneMapped: false })); path.rotation.x = PI / 2; orbit.add(path);
+  const carrier = new THREE.Group(); orbit.add(carrier);
+  const plane = new THREE.Group(); plane.position.set(1.35, 0, 0); carrier.add(plane);
+  const white = M.plastic(0xffffff, { roughness: 0.2 });
+  const fus = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.62, 8, 16), white); fus.rotation.x = PI / 2; plane.add(fus);
+  const wing = rbox(0.9, 0.025, 0.18, 0.01, white); plane.add(wing);
+  const tailW = rbox(0.34, 0.02, 0.1, 0.01, white); tailW.position.z = 0.36; plane.add(tailW);
+  const fin = rbox(0.02, 0.18, 0.12, 0.01, M.plastic(C.red)); fin.position.set(0, 0.1, 0.36); plane.add(fin);
+  [-0.22, 0.22].forEach(x => { const e = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.14, 14), M.plastic(C.brand)); e.rotation.x = PI / 2; e.position.set(x, -0.05, -0.04); plane.add(e); });
+  const nav = [[-0.45, C.red], [0.45, C.green]].map(([x, c]) => { const n = glow(c, 0.22, 0.9); n.position.set(x, 0, 0); plane.add(n); return n; });
+  const trail = [];
+  for (let i = 0; i < 16; i++) { const s = glow(i % 2 ? C.blue : 0xffffff, 0.16, 0); orbit.add(s); trail.push(s); }
+  const bags = [];
+  [C.yellow, C.green].forEach((c, i) => { const b = new THREE.Group(); b.add(rbox(0.3, 0.38, 0.16, 0.04, M.plastic(c))); b.add(stick(V(-0.07, 0.19), V(0.07, 0.19), 0.02, M.plastic(0x222222))); b.position.set(i ? 1.25 : -1.25, -1.15, 0.2); g.add(b); bags.push(b); });
+  const halo = glow(C.blue, 3.6, 0.3); halo.position.z = -0.6; g.add(halo);
+  return {
+    obj: g, w: 3.4, h: 3.2,
+    update(t) {
+      globe.rotation.y = t * 0.25;
+      const a = t * 0.7; carrier.rotation.y = -a; plane.rotation.set(0, PI, Math.sin(t * 1.4) * 0.15);
+      nav.forEach((n, i) => { n.material.opacity = Math.sin(t * 6 + i * PI) > 0 ? 1 : 0.3; });
+      trail.forEach((s, i) => { const b = -a + 0.08 * (i + 1); s.position.set(Math.cos(b) * 1.35, 0, -Math.sin(b) * 1.35); s.material.opacity = (1 - i / trail.length) * 0.6; });
+      pins.forEach((p, i) => { p.scale.setScalar(1 + Math.max(0, Math.sin(t * 3 + i)) * 0.8); });
+      bags.forEach((b, i) => { b.position.y = -1.15 + Math.abs(Math.sin(t * 2 + i * PI / 2)) * 0.08; b.rotation.y = Math.sin(t + i) * 0.4; });
+    }
+  };
+}
+
 /* ---------- holders: map DOM anchors to 3D actors ---------- */
-const factories = { logo: makeLogo, gcse: makeGCSE, bag: makeBag, shield: makeShield, bottle: makeBottle, play: makePlay, tower: makeTower, bulb: makeBulb, traffic: makeTraffic };
+const factories = { logo: makeLogo, gcse: makeGCSE, bag: makeBag, shield: makeShield, bottle: makeBottle, play: makePlay, tower: makeTower, bulb: makeBulb, traffic: makeTraffic, car: makeCar, portico: makePortico, radar: makeRadar, mortarboard: makeMortarboard, turbine: makeTurbine, coins: makeCoins, health: makeHealth, townhall: makeTownhall, gears: makeGears, heart: makeHeart, briefcase: makeBriefcase, siren: makeSiren, plane: makePlane };
 const holders = {};
 function holder(k) {
   if (holders[k]) return holders[k];
